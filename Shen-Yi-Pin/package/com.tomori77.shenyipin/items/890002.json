@@ -1,0 +1,82 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890002,
+    "iconBasename": "shenyipin-spell-1x1",
+    "name": "沧浪指",
+    "description": "沧溟帝水经第一层招式。凝露为指，一指出而沧浪随行。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "water",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "water"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190001,
+      "unlockLayer": 1,
+      "rewardKind": "choice",
+      "triggerMode": "active",
+      "role": "offense",
+      "activeCast": {
+        "cooldownSec": 5
+      }
+    },
+    "effectList": [
+      {
+        "kind": "effectNote",
+        "label": "长按释放，消耗 5 点法力与 5 层露水，<battle>对敌方造成 20 点伤害，并施加 3 层乱流</battle>",
+        "executors": [
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "damageHealth",
+            "amount": 20,
+            "realmGrowth": {
+              "qiRefining": [
+                20,
+                40
+              ]
+            },
+            "costs": [
+              {
+                "stat": "mana",
+                "amount": 5,
+                "realmGrowth": {
+                  "qiRefining": [
+                    5,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "turbulence",
+            "amount": 3,
+            "targetActor": "enemy",
+            "support": "battleOnly",
+            "consumeSourceBuffStacks": {
+              "buffId": "dew",
+              "requiredStacks": 5,
+              "maxStacks": 5
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

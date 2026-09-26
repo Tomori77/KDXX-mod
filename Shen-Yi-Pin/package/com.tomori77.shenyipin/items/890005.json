@@ -1,0 +1,86 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890005,
+    "iconBasename": "shenyipin-spell-2x2",
+    "name": "万流成冰",
+    "description": "沧溟帝水经第三层招式。万流归一，尽作寒冰，凝敌于阵。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "water",
+    "shape": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "water"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190001,
+      "unlockLayer": 3,
+      "rewardKind": "choice",
+      "triggerMode": "active",
+      "role": "control",
+      "activeCast": {
+        "cooldownSec": 16
+      }
+    },
+    "effectList": [
+      {
+        "kind": "effectNote",
+        "label": "长按释放，消耗 50 层露水，<battle>冻结敌方全部道具 3 秒，对敌方施加 50 层乱流与 50 层冰霜</battle>，并使自身获得 50 层寒冷",
+        "executors": [
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "itemRuntimeStatus",
+            "itemRuntimeStatus": "freeze",
+            "targetActor": "enemy",
+            "targetSelection": "all",
+            "durationSec": 3,
+            "support": "battleOnly"
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "turbulence",
+            "amount": 50,
+            "targetActor": "enemy",
+            "support": "battleOnly",
+            "consumeSourceBuffStacks": {
+              "buffId": "dew",
+              "requiredStacks": 50,
+              "maxStacks": 50
+            }
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "frost",
+            "amount": 50,
+            "targetActor": "enemy"
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "cold",
+            "amount": 50
+          }
+        ]
+      }
+    ]
+  }
+}

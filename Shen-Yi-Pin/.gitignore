@@ -1,0 +1,7 @@
+mod-validation-report.json
+mod-project.local.json
+.agent/
+.codex/
+.idea/
+.vscode/
+node_modules/

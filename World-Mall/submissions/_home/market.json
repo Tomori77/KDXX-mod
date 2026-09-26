@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "publisher": {
+    "id": "com.tomori77.world-mall",
+    "name": "万界商行"
+  },
+  "stall": {
+    "name": "万界商行·自营柜",
+    "npcName": "商行掌柜",
+    "description": "商行自设的常备货架。",
+    "refreshDays": 30
+  },
+  "goods": [
+    {
+      "key": "wandering-lamp",
+      "item": {
+        "numericId": 490010,
+        "name": "游方引灵灯",
+        "description": "商行自营的引灵灯，可作炼器耗材。",
+        "category": "implement",
+        "grade": "common",
+        "element": "none",
+        "shape": [[1]],
+        "tags": ["mall-home"],
+        "effectList": []
+      },
+      "icon": "wandering-lamp",
+      "offer": {
+        "count": 1,
+        "stock": 20,
+        "cost": { "type": "spiritStones", "amount": 12 }
+      }
+    }
+  ]
+}

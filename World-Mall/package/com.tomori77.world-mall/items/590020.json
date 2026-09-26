@@ -1,0 +1,29 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 590020,
+    "iconBasename": "com-example-sample-mod-sample-jade",
+    "name": "示例灵玉",
+    "description": "示例投稿的灵玉，仅供演示商行表。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "material",
+    "grade": "spirit",
+    "element": "wood",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "sample"
+    ],
+    "effectList": [],
+    "distribution": {
+      "channels": [
+        "bazaar"
+      ]
+    },
+    "price": 30.0
+  }
+}

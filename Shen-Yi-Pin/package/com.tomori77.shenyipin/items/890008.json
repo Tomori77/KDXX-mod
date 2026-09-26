@@ -1,0 +1,73 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890008,
+    "iconBasename": "shenyipin-spell-3x3",
+    "name": "沧溟吐纳",
+    "description": "沧溟帝水经第四层招式。吐纳之间，露自四方生，修自周身长。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "water",
+    "shape": [
+      [
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "water"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190001,
+      "unlockLayer": 4,
+      "rewardKind": "fixed",
+      "triggerMode": "conditional",
+      "role": "support"
+    },
+    "effectList": [
+      {
+        "kind": "passive",
+        "label": "所有道具获得露水时，额外获得 10 层露水",
+        "passiveEffect": {
+          "type": "buffGainMirror",
+          "sourceBuffId": "dew",
+          "targetBuffId": "dew",
+          "countPerGain": 10,
+          "sourceTarget": {
+            "type": "any"
+          },
+          "label": "所有道具获得露水时，额外获得 10 层露水"
+        }
+      },
+      {
+        "kind": "passive",
+        "label": "所有修为获取翻倍",
+        "passiveEffect": {
+          "type": "globalOutputModifier",
+          "stat": "cultivation",
+          "bonus": 1,
+          "label": "所有修为获取翻倍"
+        }
+      }
+    ]
+  }
+}

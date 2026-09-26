@@ -1,0 +1,15 @@
+{
+  "id": "com.tomori77.world-mall",
+  "name": "万界商行",
+  "version": "1.0.0",
+  "modApiVersion": 1,
+  "enabled": true,
+  "author": "Tomori77",
+  "description": "汇聚各方投稿货签的自营商行：新增一处商行地图，各家来源独立货架。",
+  "domains": {
+    "items": { "schemaVersion": 3, "path": "items" },
+    "maps": { "schemaVersion": 1, "path": "maps" },
+    "bazaars": { "schemaVersion": 1, "path": "bazaars" },
+    "adventures": { "schemaVersion": 1, "path": "adventures" }
+  }
+}

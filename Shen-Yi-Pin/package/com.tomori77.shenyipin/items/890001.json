@@ -1,0 +1,103 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890001,
+    "iconBasename": "shenyipin-spell-1x1",
+    "name": "引露",
+    "description": "沧溟帝水经第一层招式。静心引气，露自空生，寒随露起。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "water",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "water"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190001,
+      "unlockLayer": 1,
+      "rewardKind": "choice",
+      "triggerMode": "rotation",
+      "role": "support"
+    },
+    "effectList": [
+      {
+        "kind": "periodicPulse",
+        "periodicPulse": {
+          "intervalSec": 6,
+          "label": "轮转时：露水为空，获得 20 层露水",
+          "buffGains": [
+            {
+              "buffId": "dew",
+              "count": 20
+            }
+          ],
+          "activationRequirements": {
+            "buffStackThresholds": [
+              {
+                "buffId": "dew",
+                "comparator": "atMost",
+                "count": 0
+              }
+            ]
+          }
+        }
+      },
+      {
+        "kind": "periodicPulse",
+        "periodicPulse": {
+          "intervalSec": 6,
+          "label": "轮转时：露水不为空，获得 10 层寒冷，且不消耗露水",
+          "buffGains": [
+            {
+              "buffId": "cold",
+              "count": 10
+            }
+          ],
+          "activationRequirements": {
+            "buffStackThresholds": [
+              {
+                "buffId": "dew",
+                "comparator": "atLeast",
+                "count": 1
+              }
+            ]
+          }
+        }
+      },
+      {
+        "kind": "periodicPulse",
+        "periodicPulse": {
+          "intervalSec": 6,
+          "label": "轮转时：露水满层，获得 5 层闪避",
+          "buffGains": [
+            {
+              "buffId": "dodge",
+              "count": 5
+            }
+          ],
+          "activationRequirements": {
+            "buffStackThresholds": [
+              {
+                "buffId": "dew",
+                "comparator": "atCap",
+                "count": 0
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

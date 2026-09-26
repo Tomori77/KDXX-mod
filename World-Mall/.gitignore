@@ -1,0 +1,4 @@
+mod-project.local.json
+mod-validation-report.json
+mods-lab/
+*.tmp

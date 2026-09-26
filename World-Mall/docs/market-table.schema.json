@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world-mall://market-table@1",
+  "title": "万界商行表 (market.json)",
+  "description": "投稿 Mod 放在自己包内 market/ 目录下的商行表。它不是游戏 Mod domain（不写进 manifest.domains），构建期由万界商行管线读取并聚合成一个合法包。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "publisher", "goods"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "publisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)+$",
+          "description": "投稿 Mod 的反向域 ID"
+        },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 }
+      }
+    },
+    "stall": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "npcName": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 500 },
+        "refreshDays": { "type": "integer", "minimum": 1, "maximum": 36000 }
+      }
+    },
+    "goods": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "item", "icon", "offer"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 80,
+            "description": "投稿内唯一短名，用于生成 bazaar offer id"
+          },
+          "item": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["numericId", "name", "description", "category", "grade", "element", "shape"],
+            "properties": {
+              "numericId": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "社区号段内的期望 ID；若已被占用或越段，构建器将重新铸造"
+              },
+              "name": { "type": "string", "minLength": 1 },
+              "description": { "type": "string", "minLength": 1 },
+              "category": {
+                "enum": ["pill", "implement", "chest", "material", "formation", "talisman", "throwable"]
+              },
+              "grade": { "enum": ["common", "spirit", "mystic", "earth", "heaven", "immortal"] },
+              "element": { "enum": ["metal", "wood", "water", "fire", "earth", "thunder", "poison", "ice", "wind", "none"] },
+              "shape": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "enum": [0, 1] }
+                }
+              },
+              "tags": { "type": "array", "items": { "type": "string" } },
+              "effectList": { "type": "array", "items": { "type": "object" } }
+            }
+          },
+          "icon": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$",
+            "description": "投稿 icons/ 目录下的 PNG 母图基名（不含扩展名）"
+          },
+          "offer": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["count", "stock", "cost"],
+            "properties": {
+              "count": { "type": "integer", "minimum": 1, "maximum": 100 },
+              "stock": { "type": "integer", "minimum": 1, "maximum": 1000 },
+              "cost": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["type", "amount"],
+                    "properties": {
+                      "type": { "const": "spiritStones" },
+                      "amount": { "type": "integer", "minimum": 1, "maximum": 1000000 }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["templateNumericId", "count"],
+                    "properties": {
+                      "templateNumericId": { "type": "integer", "minimum": 1 },
+                      "count": { "type": "integer", "minimum": 1, "maximum": 100 }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

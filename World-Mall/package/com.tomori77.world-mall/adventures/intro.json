@@ -1,0 +1,29 @@
+{
+  "kind": "flow",
+  "id": "com.tomori77.world-mall:intro",
+  "name": "商行迎客",
+  "startStepId": "welcome",
+  "steps": [
+    {
+      "id": "welcome",
+      "title": "万界商行",
+      "body": "此处汇聚各方道友寄卖的货签。正厅为总柜，诸方货架按来源分设，去里间即可逐架查看。",
+      "options": [
+        {
+          "id": "go",
+          "label": "去看看货架",
+          "nextStepId": "end",
+          "conditions": [],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "end",
+      "title": "往里请",
+      "body": "各家货架独立标价，灵石或易物成交。祝道友挑得中意之物。",
+      "terminal": true,
+      "options": []
+    }
+  ]
+}

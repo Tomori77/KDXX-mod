@@ -1,0 +1,22 @@
+{
+  "id": "com.tomori77.world-mall:com-tomori77-world-mall",
+  "mapId": "com.tomori77.world-mall:hall",
+  "nodeId": "stalls",
+  "name": "万界商行·自营柜",
+  "npcName": "商行掌柜",
+  "description": "商行自设的常备货架。",
+  "refreshDays": 30,
+  "offers": [
+    {
+      "id": "wandering-lamp",
+      "label": "游方引灵灯",
+      "templateNumericId": 490010,
+      "count": 1,
+      "stock": 20,
+      "cost": {
+        "type": "spiritStones",
+        "amount": 12
+      }
+    }
+  ]
+}

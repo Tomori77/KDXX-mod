@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "publisher": {
+    "id": "com.example.sample-mod",
+    "name": "示例投稿Mod"
+  },
+  "stall": {
+    "name": "示例道人的货架",
+    "npcName": "示例道人",
+    "description": "第三方示例投稿：展示商行表格式。",
+    "refreshDays": 60
+  },
+  "goods": [
+    {
+      "key": "sample-jade",
+      "item": {
+        "numericId": 590020,
+        "name": "示例灵玉",
+        "description": "示例投稿的灵玉，仅供演示商行表。",
+        "category": "material",
+        "grade": "spirit",
+        "element": "wood",
+        "shape": [[1]],
+        "tags": ["sample"],
+        "effectList": []
+      },
+      "icon": "sample-jade",
+      "offer": {
+        "count": 3,
+        "stock": 15,
+        "cost": { "type": "spiritStones", "amount": 30 }
+      }
+    }
+  ]
+}

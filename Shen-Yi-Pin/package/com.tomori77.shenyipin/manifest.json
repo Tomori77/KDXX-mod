@@ -1,0 +1,15 @@
+{
+  "id": "com.tomori77.shenyipin",
+  "name": "神一品",
+  "version": "1.0.0",
+  "modApiVersion": 1,
+  "enabled": true,
+  "author": "Tomori77",
+  "description": "新增凡品水属性功法「神一品·水诀」及其招式。",
+  "domains": {
+    "items": {
+      "schemaVersion": 3,
+      "path": "items"
+    }
+  }
+}

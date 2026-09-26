@@ -1,0 +1,62 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890006,
+    "iconBasename": "shenyipin-spell-1x1",
+    "name": "沧溟啸",
+    "description": "沧溟帝水经第三层招式。长啸引潮，帝水经修为大涨。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "water",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "water"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190001,
+      "unlockLayer": 3,
+      "rewardKind": "choice",
+      "triggerMode": "active",
+      "role": "support",
+      "activeCast": {
+        "cooldownSec": 10
+      }
+    },
+    "effectList": [
+      {
+        "kind": "effectNote",
+        "label": "长按释放，消耗 20 层露水，<cultivation>10 秒内沧溟帝水经获得的修为变为 3 倍</cultivation>",
+        "executors": [
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "temporarySourceScriptureCultivationGainMultiplier",
+            "amount": 3,
+            "durationSec": 10
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "damageHealth",
+            "amount": 0,
+            "consumeSourceBuffStacks": {
+              "buffId": "dew",
+              "requiredStacks": 20,
+              "consumeRatio": 1
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

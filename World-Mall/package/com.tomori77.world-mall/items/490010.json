@@ -1,0 +1,29 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 490010,
+    "iconBasename": "com-tomori77-world-mall-wandering-lamp",
+    "name": "游方引灵灯",
+    "description": "商行自营的引灵灯，可作炼器耗材。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "implement",
+    "grade": "common",
+    "element": "none",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "mall-home"
+    ],
+    "effectList": [],
+    "distribution": {
+      "channels": [
+        "bazaar"
+      ]
+    },
+    "price": 12.0
+  }
+}

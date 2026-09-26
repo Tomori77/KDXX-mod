@@ -1,0 +1,65 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890004,
+    "iconBasename": "shenyipin-spell-1x1",
+    "name": "碧潮引",
+    "description": "沧溟帝水经第二层招式。潮生碧色，水盛则露、寒、甲皆盈。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "water",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "water"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190001,
+      "unlockLayer": 2,
+      "rewardKind": "choice",
+      "triggerMode": "rotation",
+      "role": "support"
+    },
+    "effectList": [
+      {
+        "kind": "periodicPulse",
+        "periodicPulse": {
+          "intervalSec": 8,
+          "label": "轮转时：每有 1 件相邻水属性道具，获得 10 层露水、10 层寒冷、10 层护甲",
+          "buffGains": [
+            {
+              "buffId": "dew",
+              "count": 10
+            },
+            {
+              "buffId": "cold",
+              "count": 10
+            },
+            {
+              "buffId": "armor",
+              "count": 10
+            }
+          ],
+          "scaling": {
+            "mode": "count",
+            "source": "adjacentItems",
+            "elements": [
+              "water"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

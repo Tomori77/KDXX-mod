@@ -1,0 +1,76 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890009,
+    "iconBasename": "shenyipin-spell-2x2",
+    "name": "沧溟化水",
+    "description": "沧溟帝水经第四层招式。身与境同化，凡水皆为我用。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "water",
+    "shape": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "water"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190001,
+      "unlockLayer": 4,
+      "rewardKind": "fixed",
+      "triggerMode": "rotation",
+      "role": "control"
+    },
+    "effectList": [
+      {
+        "kind": "periodicPulse",
+        "periodicPulse": {
+          "intervalSec": 12,
+          "label": "轮转时：每有 1 件相邻水属性道具，对敌方施加 10 层冰霜；并施加 5 层乱流"
+        },
+        "executors": [
+          {
+            "trigger": "onPeriodicPulse",
+            "type": "applyBuff",
+            "buffId": "frost",
+            "count": 10,
+            "targetActor": "enemy",
+            "polarity": "detrimental",
+            "scaling": {
+              "mode": "count",
+              "source": "adjacentItems",
+              "elements": [
+                "water"
+              ]
+            },
+            "support": "battleOnly"
+          },
+          {
+            "trigger": "onPeriodicPulse",
+            "type": "applyBuff",
+            "buffId": "turbulence",
+            "count": 5,
+            "targetActor": "enemy",
+            "polarity": "detrimental",
+            "support": "battleOnly"
+          }
+        ]
+      }
+    ]
+  }
+}

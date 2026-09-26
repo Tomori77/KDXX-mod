@@ -1,0 +1,59 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890007,
+    "iconBasename": "shenyipin-spell-1x1",
+    "name": "回生诀",
+    "description": "沧溟帝水经第三层招式。化寒凝甲，露盈则生。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "water",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "water"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190001,
+      "unlockLayer": 3,
+      "rewardKind": "choice",
+      "triggerMode": "rotation",
+      "role": "support"
+    },
+    "effectList": [
+      {
+        "kind": "periodicPulse",
+        "periodicPulse": {
+          "intervalSec": 10,
+          "label": "轮转时：每有 1 层露水恢复 3 点气血；并将所有寒冷转化为等量护甲",
+          "primaryStatGainPerBuffStack": {
+            "buffId": "dew",
+            "stat": "health",
+            "valuePerStack": 3
+          }
+        },
+        "executors": [
+          {
+            "trigger": "onPeriodicPulse",
+            "type": "convertBuffStacks",
+            "sourceBuffId": "cold",
+            "targetBuffId": "armor",
+            "consumeRatio": 1,
+            "label": "将所有寒冷转化为等量护甲"
+          }
+        ]
+      }
+    ]
+  }
+}

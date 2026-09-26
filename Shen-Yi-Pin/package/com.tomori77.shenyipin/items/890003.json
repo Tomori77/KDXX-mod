@@ -1,0 +1,78 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890003,
+    "iconBasename": "shenyipin-spell-1x1",
+    "name": "叠浪三叠",
+    "description": "沧溟帝水经第二层招式。一浪叠一浪，水势层层推高。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "water",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "water"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190001,
+      "unlockLayer": 2,
+      "rewardKind": "choice",
+      "triggerMode": "active",
+      "role": "offense",
+      "activeCast": {
+        "cooldownSec": 10
+      }
+    },
+    "effectList": [
+      {
+        "kind": "effectNote",
+        "label": "长按释放，消耗 10 层露水，<battle>对敌方造成 20 点伤害并施加 5 层乱流</battle>，自身全部道具加速 10 秒",
+        "executors": [
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "damageHealth",
+            "amount": 20,
+            "realmGrowth": {
+              "qiRefining": [
+                20,
+                40
+              ]
+            }
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "turbulence",
+            "amount": 5,
+            "targetActor": "enemy",
+            "support": "battleOnly",
+            "consumeSourceBuffStacks": {
+              "buffId": "dew",
+              "requiredStacks": 10,
+              "maxStacks": 10
+            }
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "itemRuntimeStatus",
+            "itemRuntimeStatus": "haste",
+            "targetActor": "self",
+            "targetSelection": "all",
+            "durationSec": 10
+          }
+        ]
+      }
+    ]
+  }
+}

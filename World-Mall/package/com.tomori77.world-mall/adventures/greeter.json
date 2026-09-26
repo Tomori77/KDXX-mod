@@ -1,0 +1,11 @@
+{
+  "kind": "interaction",
+  "id": "com.tomori77.world-mall:greeter",
+  "flowId": "com.tomori77.world-mall:intro",
+  "mapId": "com.tomori77.world-mall:hall",
+  "nodeId": "hall",
+  "name": "商行管事",
+  "npc": {
+    "description": "在正厅迎客的商行管事。"
+  }
+}

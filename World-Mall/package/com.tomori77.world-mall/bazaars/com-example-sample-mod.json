@@ -1,0 +1,22 @@
+{
+  "id": "com.tomori77.world-mall:com-example-sample-mod",
+  "mapId": "com.tomori77.world-mall:hall",
+  "nodeId": "stalls",
+  "name": "示例道人的货架",
+  "npcName": "示例道人",
+  "description": "第三方示例投稿：展示商行表格式。",
+  "refreshDays": 60,
+  "offers": [
+    {
+      "id": "sample-jade",
+      "label": "示例灵玉",
+      "templateNumericId": 590020,
+      "count": 3,
+      "stock": 15,
+      "cost": {
+        "type": "spiritStones",
+        "amount": 30
+      }
+    }
+  ]
+}

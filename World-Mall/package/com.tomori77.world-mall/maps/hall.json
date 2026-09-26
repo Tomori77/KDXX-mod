@@ -1,0 +1,22 @@
+{
+  "mapId": "com.tomori77.world-mall:hall",
+  "displayName": "万界商行",
+  "backgroundImageBasename": "mall-hall",
+  "startNodeId": "return",
+  "entrance": {
+    "mapId": "map_05",
+    "nodeId": "grotto-mouth",
+    "x": 0.2,
+    "y": 0.82
+  },
+  "travelDaysPerEdge": 1,
+  "nodes": [
+    { "id": "return", "kind": "site", "name": "归途石阵", "x": 0.18, "y": 0.5 },
+    { "id": "hall", "kind": "site", "name": "万界商行·正厅", "x": 0.5, "y": 0.3 },
+    { "id": "stalls", "kind": "site", "name": "万界商行·诸方货架", "x": 0.8, "y": 0.55 }
+  ],
+  "edges": [
+    { "from": "return", "to": "hall" },
+    { "from": "hall", "to": "stalls" }
+  ]
+}
