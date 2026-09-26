@@ -2,7 +2,7 @@
   "mode": "add",
   "item": {
     "numericId": 890006,
-    "iconBasename": "shenyipin-spell-1x1",
+    "iconBasename": "shenyipin-cangming-xiao",
     "name": "沧溟啸",
     "description": "沧溟帝水经第三层招式。长啸引潮，帝水经修为大涨。",
     "isPublished": true,
@@ -26,7 +26,7 @@
     },
     "spell": {
       "sourceScriptureNumericId": 190001,
-      "unlockLayer": 3,
+      "unlockLayer": 4,
       "rewardKind": "choice",
       "triggerMode": "active",
       "role": "support",

@@ -2,7 +2,7 @@
   "mode": "add",
   "item": {
     "numericId": 890009,
-    "iconBasename": "shenyipin-spell-2x2",
+    "iconBasename": "shenyipin-cangming-huashui",
     "name": "沧溟化水",
     "description": "沧溟帝水经第四层招式。身与境同化，凡水皆为我用。",
     "isPublished": true,
@@ -31,7 +31,7 @@
     },
     "spell": {
       "sourceScriptureNumericId": 190001,
-      "unlockLayer": 4,
+      "unlockLayer": 5,
       "rewardKind": "fixed",
       "triggerMode": "rotation",
       "role": "control"

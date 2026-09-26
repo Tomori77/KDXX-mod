@@ -2,7 +2,7 @@
   "mode": "add",
   "item": {
     "numericId": 890005,
-    "iconBasename": "shenyipin-spell-2x2",
+    "iconBasename": "shenyipin-wanliu-chengbing",
     "name": "万流成冰",
     "description": "沧溟帝水经第三层招式。万流归一，尽作寒冰，凝敌于阵。",
     "isPublished": true,
@@ -31,7 +31,7 @@
     },
     "spell": {
       "sourceScriptureNumericId": 190001,
-      "unlockLayer": 3,
+      "unlockLayer": 4,
       "rewardKind": "choice",
       "triggerMode": "active",
       "role": "control",

@@ -2,7 +2,7 @@
   "mode": "add",
   "item": {
     "numericId": 890001,
-    "iconBasename": "shenyipin-spell-1x1",
+    "iconBasename": "shenyipin-yinlu",
     "name": "引露",
     "description": "沧溟帝水经第一层招式。静心引气，露自空生，寒随露起。",
     "isPublished": true,
@@ -26,7 +26,7 @@
     },
     "spell": {
       "sourceScriptureNumericId": 190001,
-      "unlockLayer": 1,
+      "unlockLayer": 2,
       "rewardKind": "choice",
       "triggerMode": "rotation",
       "role": "support"

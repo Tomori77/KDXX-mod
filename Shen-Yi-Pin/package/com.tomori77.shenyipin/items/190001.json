@@ -4,7 +4,7 @@
     "numericId": 190001,
     "iconBasename": "shenyipin-scripture",
     "name": "神一品·沧溟帝水经·残卷",
-    "description": "凡品水属性功法残卷，共四层。引露化寒、以寒生修，每一层各授招式。",
+    "description": "凡品水属性功法残卷。入门首层无境界之限，其后自炼气三层起修，至炼气圆满而功成，每一层各授招式，引露化寒、以寒生修。",
     "isPublished": true,
     "isObtainable": true,
     "category": "scripture",
@@ -27,43 +27,56 @@
     "effectList": [
       {
         "kind": "passive",
-        "label": "露水层数上限 +30",
-        "passiveEffect": { "type": "buffStackCapBonus", "buffId": "dew", "value": 30, "label": "露水层数上限 +30" }
+        "label": "露水层数上限 +20",
+        "passiveEffect": { "type": "buffStackCapBonus", "buffId": "dew", "value": 20, "label": "露水层数上限 +20" }
       },
       {
         "kind": "passive",
-        "label": "寒冷层数上限 +30",
-        "passiveEffect": { "type": "buffStackCapBonus", "buffId": "cold", "value": 30, "label": "寒冷层数上限 +30" }
+        "label": "寒冷层数上限 +20",
+        "passiveEffect": { "type": "buffStackCapBonus", "buffId": "cold", "value": 20, "label": "寒冷层数上限 +20" }
       },
       {
         "kind": "passive",
-        "label": "闪避层数上限 +15",
-        "passiveEffect": { "type": "buffStackCapBonus", "buffId": "dodge", "value": 15, "label": "闪避层数上限 +15" }
+        "label": "闪避层数上限 +5",
+        "passiveEffect": { "type": "buffStackCapBonus", "buffId": "dodge", "value": 5, "label": "闪避层数上限 +5" }
       },
       {
         "kind": "triggered",
-        "label": "每生成 1 层露水，获得 12 点修为",
-        "triggeredEffect": { "trigger": "onBuffGain", "eventBuffId": "dew", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 12 }
+        "label": "每生成 1 层露水，获得 8 点修为",
+        "triggeredEffect": { "trigger": "onBuffGain", "eventBuffId": "dew", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 8 }
       },
       {
         "kind": "triggered",
-        "label": "每生成 1 层寒冷，获得 12 点修为",
-        "triggeredEffect": { "trigger": "onBuffGain", "eventBuffId": "cold", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 12 }
+        "label": "每生成 1 层寒冷，获得 8 点修为",
+        "triggeredEffect": { "trigger": "onBuffGain", "eventBuffId": "cold", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 8 }
       },
       {
         "kind": "triggered",
-        "label": "每消耗 1 层露水，获得 12 点修为",
-        "triggeredEffect": { "trigger": "onBuffConsumed", "eventBuffId": "dew", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 12 }
+        "label": "每消耗 1 层露水，获得 8 点修为",
+        "triggeredEffect": { "trigger": "onBuffConsumed", "eventBuffId": "dew", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 8 }
       },
       {
         "kind": "triggered",
-        "label": "每消耗 1 层寒冷，获得 12 点修为",
-        "triggeredEffect": { "trigger": "onBuffConsumed", "eventBuffId": "cold", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 12 }
+        "label": "每消耗 1 层寒冷，获得 8 点修为",
+        "triggeredEffect": { "trigger": "onBuffConsumed", "eventBuffId": "cold", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 8 }
       },
       {
         "kind": "scriptureProgression",
         "scriptureProgression": {
           "layers": [
+            {
+              "effects": {
+                "effectList": [
+                  { "kind": "passive", "label": "露水层数上限 +20", "passiveEffect": { "type": "buffStackCapBonus", "buffId": "dew", "value": 20, "label": "露水层数上限 +20" } },
+                  { "kind": "passive", "label": "寒冷层数上限 +20", "passiveEffect": { "type": "buffStackCapBonus", "buffId": "cold", "value": 20, "label": "寒冷层数上限 +20" } },
+                  { "kind": "passive", "label": "闪避层数上限 +5", "passiveEffect": { "type": "buffStackCapBonus", "buffId": "dodge", "value": 5, "label": "闪避层数上限 +5" } },
+                  { "kind": "triggered", "label": "每生成 1 层露水，获得 8 点修为", "triggeredEffect": { "trigger": "onBuffGain", "eventBuffId": "dew", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 8 } },
+                  { "kind": "triggered", "label": "每生成 1 层寒冷，获得 8 点修为", "triggeredEffect": { "trigger": "onBuffGain", "eventBuffId": "cold", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 8 } },
+                  { "kind": "triggered", "label": "每消耗 1 层露水，获得 8 点修为", "triggeredEffect": { "trigger": "onBuffConsumed", "eventBuffId": "dew", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 8 } },
+                  { "kind": "triggered", "label": "每消耗 1 层寒冷，获得 8 点修为", "triggeredEffect": { "trigger": "onBuffConsumed", "eventBuffId": "cold", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 8 } }
+                ]
+              }
+            },
             {
               "requirements": { "requiredRealmId": "qiRefining", "requiredRealmLayer": 3, "requiredCultivation": 1000 },
               "effects": {
@@ -76,7 +89,10 @@
                   { "kind": "triggered", "label": "每消耗 1 层露水，获得 12 点修为", "triggeredEffect": { "trigger": "onBuffConsumed", "eventBuffId": "dew", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 12 } },
                   { "kind": "triggered", "label": "每消耗 1 层寒冷，获得 12 点修为", "triggeredEffect": { "trigger": "onBuffConsumed", "eventBuffId": "cold", "type": "gainCultivation", "amount": 0, "amountPerEventBuffStack": 12 } }
                 ]
-              }
+              },
+              "breakthroughTargetProgress": 1000,
+              "breakthroughTimeLimitSec": 60,
+              "breakthroughCooldownSec": 60
             },
             {
               "requirements": { "requiredRealmId": "qiRefining", "requiredRealmLayer": 5, "requiredCultivation": 2000 },
