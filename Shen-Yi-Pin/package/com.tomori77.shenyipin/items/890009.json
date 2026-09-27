@@ -4,7 +4,7 @@
     "numericId": 890009,
     "iconBasename": "shenyipin-cangming-huashui",
     "name": "沧溟化水",
-    "description": "沧溟帝水经第四层招式。身与境同化，凡水皆为我用。",
+    "description": "沧溟帝水经第六层招式。身与境同化，凡水皆为我用。",
     "isPublished": true,
     "isObtainable": true,
     "category": "spell",
@@ -31,7 +31,7 @@
     },
     "spell": {
       "sourceScriptureNumericId": 190001,
-      "unlockLayer": 5,
+      "unlockLayer": 6,
       "rewardKind": "fixed",
       "triggerMode": "rotation",
       "role": "control"
@@ -39,34 +39,63 @@
     "effectList": [
       {
         "kind": "periodicPulse",
+        "label": "轮转时：每有 1 件相邻水属性道具，自身获得 30 层露水、10 层闪避、10 层敏捷；每有 1 层露水恢复 30 点气血；<battle>对敌方施加 20 层冰霜与 20 层乱流，并使敌方全部道具冻结 3 秒</battle>",
         "periodicPulse": {
           "intervalSec": 12,
-          "label": "轮转时：每有 1 件相邻水属性道具，对敌方施加 10 层冰霜；并施加 5 层乱流"
+          "label": "轮转时：每有 1 件相邻水属性道具，自身获得 30 层露水、10 层闪避、10 层敏捷；每有 1 层露水恢复 30 点气血",
+          "buffGains": [
+            {
+              "buffId": "dew",
+              "count": 30
+            },
+            {
+              "buffId": "dodge",
+              "count": 10
+            },
+            {
+              "buffId": "agile",
+              "count": 10
+            }
+          ],
+          "scaling": {
+            "mode": "count",
+            "source": "adjacentItems",
+            "elements": [
+              "water"
+            ]
+          },
+          "primaryStatGainPerBuffStack": {
+            "buffId": "dew",
+            "stat": "health",
+            "valuePerStack": 30
+          }
         },
         "executors": [
           {
             "trigger": "onPeriodicPulse",
             "type": "applyBuff",
             "buffId": "frost",
-            "count": 10,
+            "count": 20,
             "targetActor": "enemy",
             "polarity": "detrimental",
-            "scaling": {
-              "mode": "count",
-              "source": "adjacentItems",
-              "elements": [
-                "water"
-              ]
-            },
             "support": "battleOnly"
           },
           {
             "trigger": "onPeriodicPulse",
             "type": "applyBuff",
             "buffId": "turbulence",
-            "count": 5,
+            "count": 20,
             "targetActor": "enemy",
             "polarity": "detrimental",
+            "support": "battleOnly"
+          },
+          {
+            "trigger": "onPeriodicPulse",
+            "type": "itemRuntimeStatus",
+            "itemRuntimeStatus": "freeze",
+            "targetActor": "enemy",
+            "targetScope": "enemyAll",
+            "durationSec": 3,
             "support": "battleOnly"
           }
         ]

@@ -34,6 +34,7 @@
     "effectList": [
       {
         "kind": "periodicPulse",
+        "label": "轮转时：每有 1 层露水恢复 3 点气血；并将所有寒冷转化为等量护甲",
         "periodicPulse": {
           "intervalSec": 10,
           "label": "轮转时：每有 1 层露水恢复 3 点气血；并将所有寒冷转化为等量护甲",

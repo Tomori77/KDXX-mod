@@ -4,7 +4,7 @@
     "numericId": 890005,
     "iconBasename": "shenyipin-wanliu-chengbing",
     "name": "万流成冰",
-    "description": "沧溟帝水经第三层招式。万流归一，尽作寒冰，凝敌于阵。",
+    "description": "沧溟帝水经第五层招式。万流归一，尽作寒冰，凝敌于阵。",
     "isPublished": true,
     "isObtainable": true,
     "category": "spell",
@@ -31,7 +31,7 @@
     },
     "spell": {
       "sourceScriptureNumericId": 190001,
-      "unlockLayer": 4,
+      "unlockLayer": 5,
       "rewardKind": "choice",
       "triggerMode": "active",
       "role": "control",
@@ -42,7 +42,7 @@
     "effectList": [
       {
         "kind": "effectNote",
-        "label": "长按释放，消耗 50 层露水，<battle>冻结敌方全部道具 3 秒，对敌方施加 50 层乱流与 50 层冰霜</battle>，并使自身获得 50 层寒冷",
+        "label": "长按释放，消耗 50 层露水，<battle>冻结敌方全部道具 5 秒，对敌方施加 20 层乱流与 30 层冰霜</battle>，并使自身获得 100 层寒冷",
         "executors": [
           {
             "trigger": "onActiveSpellCast",
@@ -50,14 +50,14 @@
             "itemRuntimeStatus": "freeze",
             "targetActor": "enemy",
             "targetSelection": "all",
-            "durationSec": 3,
+            "durationSec": 5,
             "support": "battleOnly"
           },
           {
             "trigger": "onActiveSpellCast",
             "type": "buffGain",
             "buffId": "turbulence",
-            "amount": 50,
+            "amount": 20,
             "targetActor": "enemy",
             "support": "battleOnly",
             "consumeSourceBuffStacks": {
@@ -70,14 +70,14 @@
             "trigger": "onActiveSpellCast",
             "type": "buffGain",
             "buffId": "frost",
-            "amount": 50,
+            "amount": 30,
             "targetActor": "enemy"
           },
           {
             "trigger": "onActiveSpellCast",
             "type": "buffGain",
             "buffId": "cold",
-            "amount": 50
+            "amount": 100
           }
         ]
       }

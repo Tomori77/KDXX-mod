@@ -34,6 +34,7 @@
     "effectList": [
       {
         "kind": "periodicPulse",
+        "label": "轮转时：露水为空，获得 20 层露水",
         "periodicPulse": {
           "intervalSec": 6,
           "label": "轮转时：露水为空，获得 20 层露水",
@@ -56,6 +57,7 @@
       },
       {
         "kind": "periodicPulse",
+        "label": "轮转时：露水不为空，获得 10 层寒冷，且不消耗露水",
         "periodicPulse": {
           "intervalSec": 6,
           "label": "轮转时：露水不为空，获得 10 层寒冷，且不消耗露水",
@@ -78,6 +80,7 @@
       },
       {
         "kind": "periodicPulse",
+        "label": "轮转时：露水满层，获得 5 层闪避",
         "periodicPulse": {
           "intervalSec": 6,
           "label": "轮转时：露水满层，获得 5 层闪避",

@@ -34,6 +34,7 @@
     "effectList": [
       {
         "kind": "periodicPulse",
+        "label": "轮转时：每有 1 件相邻水属性道具，获得 10 层露水、10 层寒冷、10 层护甲",
         "periodicPulse": {
           "intervalSec": 8,
           "label": "轮转时：每有 1 件相邻水属性道具，获得 10 层露水、10 层寒冷、10 层护甲",
