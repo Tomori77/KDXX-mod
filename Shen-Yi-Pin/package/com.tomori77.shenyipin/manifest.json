@@ -1,7 +1,7 @@
 {
   "id": "com.tomori77.shenyipin",
   "name": "神一品",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "modApiVersion": 1,
   "saveCompatibility": {
     "compatibleFrom": ">=1.0.0 <2.0.0",
