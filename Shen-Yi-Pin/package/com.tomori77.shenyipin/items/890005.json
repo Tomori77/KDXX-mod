@@ -47,6 +47,7 @@
           {
             "trigger": "onActiveSpellCast",
             "type": "itemRuntimeStatus",
+            "amount": 9007199254740991,
             "itemRuntimeStatus": "freeze",
             "targetActor": "enemy",
             "targetSelection": "all",

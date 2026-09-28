@@ -27,6 +27,6 @@
 1. 目录名必须等于 `manifest.json.id`。
 2. 每件道具一个 JSON；PNG 母图放在 `assets/icons/`，验证会生成包内双规格图标。
 3. 运行 `tools/validate.ps1`，退出码必须为 `0`。
-4. 只有用户明确要求安装时才运行 `tools/deploy.ps1`；部署后提示用户完全重启游戏。
+4. **本工程只通过 Steam 工坊订阅投放，不做本地部署**：禁止运行 `tools\deploy.ps1`；若 `%APPDATA%\Pocket Cultivation Demo\mods\com.tomori77.shenyipin` 已存在，先删除以免与工坊内容重复冲突。公开发布用 `tools\publish.ps1` 上传工坊。
 5. 不编辑存档或 Mod 选择文件绕过兼容性检查。
 6. 只有旧档实测通过后才声明 `saveCompatibility`；道具编号变化只写 `migrations/items/*.json`，禁止迁移脚本。

@@ -4,7 +4,7 @@
     "numericId": 890008,
     "iconBasename": "shenyipin-cangming-tuna",
     "name": "沧溟吐纳",
-    "description": "沧溟帝水经第四层招式。吐纳之间，露自四方生，修自周身长。",
+    "description": "沧溟帝水经第五层招式。吐纳之间，露自四方生，修自周身长。",
     "isPublished": true,
     "isObtainable": true,
     "category": "spell",
@@ -39,7 +39,7 @@
     "spell": {
       "sourceScriptureNumericId": 190001,
       "unlockLayer": 5,
-      "rewardKind": "fixed",
+      "rewardKind": "choice",
       "triggerMode": "conditional",
       "role": "support"
     },

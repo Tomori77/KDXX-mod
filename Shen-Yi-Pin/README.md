@@ -22,10 +22,13 @@
 ./tools/resolve-sdk.ps1
 ./tools/prepare-assets.ps1
 ./tools/validate.ps1
-./tools/deploy.ps1
+# 投放：仅通过 Steam 工坊订阅，不使用本地部署
+./tools/publish.ps1
 ```
 
-`resolve-sdk.ps1` 优先使用被 Git 忽略的 `mod-project.local.json.sdkPath`，否则从 Steam 库自动发现与 `target` 匹配的游戏。Demo、Playtest 和正式版均支持同一套声明式 Mod 合同；开发和受控测试可按目标选择对应 SDK。把每个 `iconBasename` 对应的高分辨率 PNG 母图放在 `assets/icons/`；`prepare-assets.ps1` 会按道具 `shape` 生成每格 128px 的 runtime 图，并保留 release 原图。`validate.ps1` 和 `deploy.ps1` 都会自动执行此步骤。公共 `mod-project.json` 不包含本机路径，可以安全分享。`deploy.ps1` 会先验证，再部署到目标版本用户数据目录，并将已有版本备份到 `mod-backups/`。
+**投放方式**：本工程只通过 Steam 工坊（appid `4777710`，`publishedfileid 3808300583`）订阅投放，不执行 `tools/deploy.ps1`，以免本地 `mods\com.tomori77.shenyipin` 与工坊内容重复冲突；已有本地目录请先删除。
+
+`resolve-sdk.ps1` 优先使用被 Git 忽略的 `mod-project.local.json.sdkPath`，否则从 Steam 库自动发现与 `target` 匹配的游戏。Demo、Playtest 和正式版均支持同一套声明式 Mod 合同；开发和受控测试可按目标选择对应 SDK。把每个 `iconBasename` 对应的高分辨率 PNG 母图放在 `assets/icons/`；`prepare-assets.ps1` 会按道具 `shape` 生成每格 128px 的 runtime 图，并保留 release 原图。`validate.ps1` 会自动执行此步骤。公共 `mod-project.json` 不包含本机路径，可以安全分享。`publish.ps1` 会先验证，再上传 Steam 工坊。
 
 让 AI 修改道具前，请让它读取匹配版本 SDK 的 `docs/domains/items/items-authoring-reference.md`。该文档覆盖增删查改、官方效果查询、软屏蔽、投放、图标、多 Mod 冲突和存档边界。
 

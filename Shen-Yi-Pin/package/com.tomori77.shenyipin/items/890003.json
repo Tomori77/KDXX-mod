@@ -4,7 +4,7 @@
     "numericId": 890003,
     "iconBasename": "shenyipin-dielang-sandie",
     "name": "叠浪三叠",
-    "description": "沧溟帝水经第二层招式。一浪叠一浪，水势层层推高。",
+    "description": "沧溟帝水经第三层招式。一浪叠一浪，水势层层推高。",
     "isPublished": true,
     "isObtainable": true,
     "category": "spell",
@@ -66,6 +66,7 @@
           {
             "trigger": "onActiveSpellCast",
             "type": "itemRuntimeStatus",
+            "amount": 9007199254740991,
             "itemRuntimeStatus": "haste",
             "targetActor": "self",
             "targetSelection": "all",

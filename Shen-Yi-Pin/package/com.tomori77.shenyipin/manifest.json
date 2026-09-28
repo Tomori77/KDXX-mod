@@ -1,7 +1,7 @@
 {
   "id": "com.tomori77.shenyipin",
   "name": "神一品",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "modApiVersion": 1,
   "saveCompatibility": {
     "compatibleFrom": ">=1.0.0 <2.0.0",
@@ -9,7 +9,7 @@
   },
   "enabled": true,
   "author": "Tomori77",
-  "description": "新增凡品水属性功法「神一品·水诀」及 9 门配套招式。",
+  "description": "新增凡品水属性功法「沧溟帝水经·残卷」及 9 门配套招式。",
   "domains": {
     "items": {
       "schemaVersion": 3,
