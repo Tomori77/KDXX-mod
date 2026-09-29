@@ -1,0 +1,8 @@
+mod-project.local.json
+mod-validation-report.json
+*.tmp
+
+# 工坊发布生成物，不入库
+tools/workshop/workshop.vdf
+tools/workshop/preview.png
+tools/workshop/创意工坊介绍.md

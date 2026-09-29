@@ -1,0 +1,20 @@
+{
+  "mapId": "com.tomori77.god-panel:anchor",
+  "displayName": "天枢台",
+  "officialBackgroundMapId": "map_05",
+  "startNodeId": "return",
+  "entrance": {
+    "mapId": "map_01",
+    "nodeId": "node_tmp_path",
+    "x": 0.185,
+    "y": 0.07
+  },
+  "travelDaysPerEdge": 1,
+  "nodes": [
+    { "id": "return", "kind": "site", "name": "归途石阵", "x": 0.2, "y": 0.5 },
+    { "id": "altar", "kind": "site", "name": "天枢法坛", "x": 0.6, "y": 0.4 }
+  ],
+  "edges": [
+    { "from": "return", "to": "altar" }
+  ]
+}
