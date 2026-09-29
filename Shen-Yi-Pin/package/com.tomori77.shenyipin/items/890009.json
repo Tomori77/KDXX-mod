@@ -68,7 +68,14 @@
             "buffId": "dew",
             "stat": "health",
             "valuePerStack": 30
-          }
+          },
+          "itemRuntimeStatusEffects": [
+            {
+              "itemRuntimeStatus": "freeze",
+              "durationSec": 3,
+              "targetScope": "enemyAll"
+            }
+          ]
         },
         "executors": [
           {
@@ -87,15 +94,6 @@
             "count": 20,
             "targetActor": "enemy",
             "polarity": "detrimental",
-            "support": "battleOnly"
-          },
-          {
-            "trigger": "onPeriodicPulse",
-            "type": "itemRuntimeStatus",
-            "itemRuntimeStatus": "freeze",
-            "targetActor": "enemy",
-            "targetScope": "enemyAll",
-            "durationSec": 3,
             "support": "battleOnly"
           }
         ]
