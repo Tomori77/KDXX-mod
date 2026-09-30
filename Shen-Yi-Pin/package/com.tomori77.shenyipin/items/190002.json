@@ -225,9 +225,9 @@
               "requirements": {
                 "requiredRealmId": "qiRefining",
                 "requiredRealmLayer": 5,
-                "requiredCultivation": 2000
+                "requiredCultivation": 3000
               },
-              "breakthroughTargetProgress": 2000,
+              "breakthroughTargetProgress": 3000,
               "breakthroughTimeLimitSec": 60,
               "breakthroughCooldownSec": 60
             },
@@ -281,9 +281,9 @@
               "requirements": {
                 "requiredRealmId": "qiRefining",
                 "requiredRealmLayer": 7,
-                "requiredCultivation": 5000
+                "requiredCultivation": 7000
               },
-              "breakthroughTargetProgress": 5000,
+              "breakthroughTargetProgress": 7000,
               "breakthroughTimeLimitSec": 60,
               "breakthroughCooldownSec": 60
             },
@@ -337,9 +337,9 @@
               "requirements": {
                 "requiredRealmId": "qiRefining",
                 "requiredRealmLayer": 10,
-                "requiredCultivation": 10000
+                "requiredCultivation": 12000
               },
-              "breakthroughTargetProgress": 10000,
+              "breakthroughTargetProgress": 12000,
               "breakthroughTimeLimitSec": 60,
               "breakthroughCooldownSec": 60
             },
@@ -393,9 +393,9 @@
               "requirements": {
                 "requiredRealmId": "foundation",
                 "requiredRealmLayer": 1,
-                "requiredCultivation": 15000
+                "requiredCultivation": 18000
               },
-              "breakthroughTargetProgress": 15000,
+              "breakthroughTargetProgress": 18000,
               "breakthroughTimeLimitSec": 60,
               "breakthroughCooldownSec": 60
             }

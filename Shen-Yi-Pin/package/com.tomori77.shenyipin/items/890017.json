@@ -39,23 +39,12 @@
     "effectList": [
       {
         "kind": "passive",
-        "label": "荧惑烬火典获取修为 ×2",
+        "label": "所有修为获取 ×2",
         "passiveEffect": {
           "type": "globalOutputModifier",
           "stat": "cultivation",
           "bonus": 1,
-          "targetFilter": {
-            "categories": [
-              "scripture"
-            ],
-            "tags": [
-              "shenyipin"
-            ],
-            "numericIds": [
-              190002
-            ]
-          },
-          "label": "荧惑烬火典获取修为 ×2"
+          "label": "所有修为获取 ×2"
         }
       },
       {

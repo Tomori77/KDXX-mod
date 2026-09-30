@@ -34,10 +34,10 @@
     "effectList": [
       {
         "kind": "periodicPulse",
-        "label": "轮转时：消耗敌方全部炎热，每层造成 3 点伤害",
+        "label": "轮转时：消耗敌方全部炎热，每层造成 5 点伤害",
         "periodicPulse": {
           "intervalSec": 15,
-          "label": "轮转时：消耗敌方全部炎热，每层造成 3 点伤害",
+          "label": "轮转时：消耗敌方全部炎热，每层造成 5 点伤害",
           "battleCondition": {
             "type": "targetBuffStacksGreaterThan",
             "buffId": "heat",
@@ -48,7 +48,7 @@
             "amount": 0,
             "amountPerTargetBuffStack": {
               "buffId": "heat",
-              "valuePerStack": 3
+              "valuePerStack": 5
             }
           },
           "removeBuffStacks": [
@@ -62,10 +62,10 @@
       },
       {
         "kind": "periodicPulse",
-        "label": "轮转时：消耗敌方全部灼烧，每层造成 3 点伤害",
+        "label": "轮转时：消耗敌方全部灼烧，每层造成 5 点伤害",
         "periodicPulse": {
           "intervalSec": 15,
-          "label": "轮转时：消耗敌方全部灼烧，每层造成 3 点伤害",
+          "label": "轮转时：消耗敌方全部灼烧，每层造成 5 点伤害",
           "battleCondition": {
             "type": "targetBuffStacksGreaterThan",
             "buffId": "burning",
@@ -76,7 +76,7 @@
             "amount": 0,
             "amountPerTargetBuffStack": {
               "buffId": "burning",
-              "valuePerStack": 3
+              "valuePerStack": 5
             }
           },
           "removeBuffStacks": [

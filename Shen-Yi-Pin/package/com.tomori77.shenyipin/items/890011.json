@@ -37,8 +37,30 @@
     "effectList": [
       {
         "kind": "effectNote",
-        "label": "长按释放：若敌方无灼烧，消耗 5 层炎热，造成 20 点伤害；若敌方有灼烧，消耗 10 层炎热与 10 层敌方灼烧，造成 40 点伤害。每有 1 件相邻火属性道具，额外释放一次",
+        "label": "长按释放：消耗 5 层炎热，对敌方造成 20 点伤害；若敌方有 10 层灼烧，则消耗 10 层炎热与 10 层敌方灼烧，额外造成 20 点伤害（合计 40）。每有 1 件相邻火属性道具，额外释放一次",
         "executors": [
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "damageHealth",
+            "amount": 20,
+            "targetActor": "enemy",
+            "realmGrowth": {
+              "qiRefining": [
+                20,
+                40
+              ]
+            },
+            "additionalExecutionsPerAdjacentMatchingItem": {
+              "elements": [
+                "fire"
+              ]
+            },
+            "consumeSourceBuffStacks": {
+              "buffId": "heat",
+              "requiredStacks": 5,
+              "maxStacks": 5
+            }
+          },
           {
             "trigger": "onActiveSpellCast",
             "type": "damageHealth",
@@ -65,8 +87,7 @@
               "targetActor": "enemy",
               "requiredStacks": 10,
               "maxStacks": 10
-            },
-            "consumeAll": false
+            }
           }
         ]
       }
