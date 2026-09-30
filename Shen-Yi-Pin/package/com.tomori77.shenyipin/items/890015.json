@@ -1,0 +1,66 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890015,
+    "iconBasename": "shenyipin-fire-huozhong-jue",
+    "name": "火种诀",
+    "description": "荧惑烬火典第四层招式。火种不熄，生生不息。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "fire",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "fire"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190002,
+      "unlockLayer": 4,
+      "rewardKind": "choice",
+      "triggerMode": "rotation",
+      "role": "support"
+    },
+    "effectList": [
+      {
+        "kind": "periodicPulse",
+        "label": "轮转时：每有 1 层炎热，获得 1 层护甲、1 层再生，恢复 2 点气血（不消耗炎热）",
+        "periodicPulse": {
+          "intervalSec": 10,
+          "label": "轮转时：每有 1 层炎热，获得 1 层护甲、1 层再生，恢复 2 点气血（不消耗炎热）",
+          "buffGains": [
+            {
+              "buffId": "armor",
+              "countPerSourceBuffStack": {
+                "buffId": "heat",
+                "valuePerStack": 1
+              }
+            },
+            {
+              "buffId": "regeneration",
+              "countPerSourceBuffStack": {
+                "buffId": "heat",
+                "valuePerStack": 1
+              }
+            }
+          ],
+          "primaryStatGainPerBuffStack": {
+            "buffId": "heat",
+            "stat": "health",
+            "valuePerStack": 2
+          }
+        }
+      }
+    ]
+  }
+}

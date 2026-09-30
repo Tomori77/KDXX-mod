@@ -1,0 +1,82 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890017,
+    "iconBasename": "shenyipin-fire-chiyan-tuna",
+    "name": "赤炎吐纳",
+    "description": "荧惑烬火典第五层招式。吐纳之间，炎息归元。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "fire",
+    "shape": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "fire"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190002,
+      "unlockLayer": 5,
+      "rewardKind": "choice",
+      "triggerMode": "conditional",
+      "role": "support"
+    },
+    "effectList": [
+      {
+        "kind": "passive",
+        "label": "荧惑烬火典获取修为 ×2",
+        "passiveEffect": {
+          "type": "globalOutputModifier",
+          "stat": "cultivation",
+          "bonus": 1,
+          "targetFilter": {
+            "categories": [
+              "scripture"
+            ],
+            "tags": [
+              "shenyipin"
+            ],
+            "numericIds": [
+              190002
+            ]
+          },
+          "label": "荧惑烬火典获取修为 ×2"
+        }
+      },
+      {
+        "kind": "passive",
+        "label": "所有火属性道具获得炎热时额外获得 10 层",
+        "passiveEffect": {
+          "type": "buffGainMirror",
+          "sourceBuffId": "heat",
+          "targetBuffId": "heat",
+          "countPerGain": 10,
+          "sourceTarget": {
+            "type": "any"
+          },
+          "sourceFilter": {
+            "elements": [
+              "fire"
+            ]
+          },
+          "label": "所有火属性道具获得炎热时额外获得 10 层"
+        }
+      }
+    ]
+  }
+}

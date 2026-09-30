@@ -1,0 +1,75 @@
+{
+  "mode": "add",
+  "item": {
+    "iconBasename": "shenyipin-fire-chiyan-zhi",
+    "name": "赤炎指",
+    "description": "荧惑烬火典第二层招式。凝炎为指，一指出而烈焰随行。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "fire",
+    "tags": [
+      "shenyipin",
+      "fire"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "numericId": 890011,
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "spell": {
+      "sourceScriptureNumericId": 190002,
+      "unlockLayer": 2,
+      "rewardKind": "choice",
+      "triggerMode": "active",
+      "role": "offense",
+      "activeCast": {
+        "cooldownSec": 5
+      }
+    },
+    "effectList": [
+      {
+        "kind": "effectNote",
+        "label": "长按释放：若敌方无灼烧，消耗 5 层炎热，造成 20 点伤害；若敌方有灼烧，消耗 10 层炎热与 10 层敌方灼烧，造成 40 点伤害。每有 1 件相邻火属性道具，额外释放一次",
+        "executors": [
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "damageHealth",
+            "amount": 20,
+            "targetActor": "enemy",
+            "realmGrowth": {
+              "qiRefining": [
+                20,
+                40
+              ]
+            },
+            "additionalExecutionsPerAdjacentMatchingItem": {
+              "elements": [
+                "fire"
+              ]
+            },
+            "consumeSourceBuffStacks": {
+              "buffId": "heat",
+              "requiredStacks": 5,
+              "maxStacks": 5
+            },
+            "consumeBuffStacks": {
+              "buffId": "burning",
+              "targetActor": "enemy",
+              "requiredStacks": 10,
+              "maxStacks": 10
+            },
+            "consumeAll": false
+          }
+        ]
+      }
+    ]
+  }
+}

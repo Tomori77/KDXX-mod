@@ -1,0 +1,119 @@
+{
+  "mode": "add",
+  "item": {
+    "iconBasename": "shenyipin-fire-liehuo-liaoyuan",
+    "name": "烈火燎原",
+    "description": "荧惑烬火典第三层招式。火起燎原，焰势蔓延不息。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "fire",
+    "tags": [
+      "shenyipin",
+      "fire"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "numericId": 890012,
+    "shape": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "spell": {
+      "sourceScriptureNumericId": 190002,
+      "unlockLayer": 3,
+      "rewardKind": "choice",
+      "triggerMode": "rotation",
+      "role": "offense"
+    },
+    "effectList": [
+      {
+        "kind": "periodicPulse",
+        "label": "轮转时：有灼烧时，将全部灼烧转为炎热，按炎热层数对敌方造成伤害，并按炎热层数施加灼烧",
+        "periodicPulse": {
+          "intervalSec": 16,
+          "label": "轮转时：有灼烧时，将全部灼烧转为炎热，按炎热层数对敌方造成伤害，并按炎热层数施加灼烧",
+          "activationRequirements": {
+            "buffStackThresholds": [
+              {
+                "buffId": "burning",
+                "comparator": "atLeast",
+                "count": 1
+              }
+            ]
+          },
+          "damageHealth": {
+            "target": "enemy",
+            "amount": 0,
+            "amountPerSourceBuffStack": {
+              "buffId": "heat",
+              "valuePerStack": 1
+            }
+          },
+          "buffGains": [
+            {
+              "buffId": "burning",
+              "countPerSourceBuffStack": {
+                "buffId": "heat",
+                "valuePerStack": 1
+              },
+              "target": "enemy",
+              "polarity": "detrimental"
+            }
+          ]
+        },
+        "executors": [
+          {
+            "trigger": "onPeriodicPulse",
+            "type": "convertBuffStacks",
+            "sourceBuffId": "burning",
+            "targetBuffId": "heat",
+            "consumeRatio": 1,
+            "label": "将全部灼烧转为炎热"
+          }
+        ]
+      },
+      {
+        "kind": "periodicPulse",
+        "label": "轮转时：无灼烧时，按炎热层数对敌方造成伤害，并给自身增加 20 层灼烧",
+        "periodicPulse": {
+          "intervalSec": 16,
+          "label": "轮转时：无灼烧时，按炎热层数对敌方造成伤害，并给自身增加 20 层灼烧",
+          "activationRequirements": {
+            "buffStackThresholds": [
+              {
+                "buffId": "burning",
+                "comparator": "atMost",
+                "count": 0
+              }
+            ]
+          },
+          "damageHealth": {
+            "target": "enemy",
+            "amount": 0,
+            "amountPerSourceBuffStack": {
+              "buffId": "heat",
+              "valuePerStack": 1
+            }
+          },
+          "buffGains": [
+            {
+              "buffId": "burning",
+              "count": 20
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

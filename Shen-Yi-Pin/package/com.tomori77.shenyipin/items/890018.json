@@ -1,0 +1,95 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890018,
+    "iconBasename": "shenyipin-fire-chiyan-huahuo",
+    "name": "赤炎化火",
+    "description": "荧惑烬火典第六层招式。身化烈焰，火意通神。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "fire",
+    "shape": [
+      [
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "fire"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190002,
+      "unlockLayer": 6,
+      "rewardKind": "fixed",
+      "triggerMode": "active",
+      "role": "offense",
+      "activeCast": {
+        "cooldownSec": 12
+      }
+    },
+    "effectList": [
+      {
+        "kind": "effectNote",
+        "label": "长按释放：每有 1 层炎热，获得 1 层引雷、1 层闪避、1 层护甲；12 秒内不消耗法力与体力",
+        "executors": [
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "lightningCharge",
+            "amount": 0,
+            "amountPerSourceBuffStack": {
+              "buffId": "heat",
+              "valuePerStack": 1
+            }
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "dodge",
+            "amount": 0,
+            "amountPerSourceBuffStack": {
+              "buffId": "heat",
+              "valuePerStack": 1
+            }
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "armor",
+            "amount": 0,
+            "amountPerSourceBuffStack": {
+              "buffId": "heat",
+              "valuePerStack": 1
+            }
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "temporaryActiveSpellCostModifier",
+            "stat": "all",
+            "amount": -999,
+            "durationSec": 12
+          }
+        ]
+      }
+    ]
+  }
+}

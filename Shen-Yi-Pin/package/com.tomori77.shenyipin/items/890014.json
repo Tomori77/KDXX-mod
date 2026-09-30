@@ -1,0 +1,93 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890014,
+    "iconBasename": "shenyipin-fire-yanlong-po",
+    "name": "炎龙破",
+    "description": "荧惑烬火典第四层招式。炎聚成龙，破空噬敌。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "fire",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "fire"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190002,
+      "unlockLayer": 4,
+      "rewardKind": "choice",
+      "triggerMode": "rotation",
+      "role": "offense"
+    },
+    "effectList": [
+      {
+        "kind": "periodicPulse",
+        "label": "轮转时：消耗敌方全部炎热，每层造成 3 点伤害",
+        "periodicPulse": {
+          "intervalSec": 15,
+          "label": "轮转时：消耗敌方全部炎热，每层造成 3 点伤害",
+          "battleCondition": {
+            "type": "targetBuffStacksGreaterThan",
+            "buffId": "heat",
+            "count": 0
+          },
+          "damageHealth": {
+            "target": "enemy",
+            "amount": 0,
+            "amountPerTargetBuffStack": {
+              "buffId": "heat",
+              "valuePerStack": 3
+            }
+          },
+          "removeBuffStacks": [
+            {
+              "target": "enemy",
+              "buffId": "heat",
+              "count": 9999
+            }
+          ]
+        }
+      },
+      {
+        "kind": "periodicPulse",
+        "label": "轮转时：消耗敌方全部灼烧，每层造成 3 点伤害",
+        "periodicPulse": {
+          "intervalSec": 15,
+          "label": "轮转时：消耗敌方全部灼烧，每层造成 3 点伤害",
+          "battleCondition": {
+            "type": "targetBuffStacksGreaterThan",
+            "buffId": "burning",
+            "count": 0
+          },
+          "damageHealth": {
+            "target": "enemy",
+            "amount": 0,
+            "amountPerTargetBuffStack": {
+              "buffId": "burning",
+              "valuePerStack": 3
+            }
+          },
+          "removeBuffStacks": [
+            {
+              "target": "enemy",
+              "buffId": "burning",
+              "count": 9999
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

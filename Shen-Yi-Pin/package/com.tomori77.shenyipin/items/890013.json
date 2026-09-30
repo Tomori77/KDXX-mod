@@ -1,0 +1,83 @@
+{
+  "mode": "add",
+  "item": {
+    "iconBasename": "shenyipin-fire-fentian-xiao",
+    "name": "焚天啸",
+    "description": "荧惑烬火典第三层招式。长啸裂空，火意冲天。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "fire",
+    "tags": [
+      "shenyipin",
+      "fire"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "numericId": 890013,
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "spell": {
+      "sourceScriptureNumericId": 190002,
+      "unlockLayer": 3,
+      "rewardKind": "choice",
+      "triggerMode": "conditional",
+      "role": "support"
+    },
+    "effectList": [
+      {
+        "kind": "passive",
+        "label": "炎热层数超过 60 时，周围道具造成的伤害 +30",
+        "activationRequirements": {
+          "buffStackThresholds": [
+            {
+              "buffId": "heat",
+              "comparator": "atLeast",
+              "count": 61
+            }
+          ]
+        },
+        "passiveEffect": {
+          "type": "battleItemDamageFlatModifier",
+          "value": 30,
+          "targetScope": {
+            "type": "adjacent"
+          },
+          "label": "炎热层数超过 60 时，周围道具造成的伤害 +30"
+        }
+      },
+      {
+        "kind": "triggered",
+        "label": "炎热层数超过 60 时，周围道具造成伤害时，对敌方施加 5 层灼烧",
+        "activationRequirements": {
+          "buffStackThresholds": [
+            {
+              "buffId": "heat",
+              "comparator": "atLeast",
+              "count": 61
+            }
+          ]
+        },
+        "triggeredEffect": {
+          "trigger": "onBattleHealthDamageDealt",
+          "type": "applyBuff",
+          "buffId": "burning",
+          "count": 5,
+          "targetActor": "enemy",
+          "eventSource": {
+            "target": {
+              "type": "adjacent"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

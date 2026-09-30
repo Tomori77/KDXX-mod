@@ -1,0 +1,90 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 890016,
+    "iconBasename": "shenyipin-fire-rongjin-huatien",
+    "name": "熔金化铁",
+    "description": "荧惑烬火典第五层招式。烈焰熔金，甲散如铁。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "spell",
+    "grade": "common",
+    "element": "fire",
+    "shape": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "fire"
+    ],
+    "distribution": {
+      "channels": [
+        "scriptureSpellReward"
+      ]
+    },
+    "spell": {
+      "sourceScriptureNumericId": 190002,
+      "unlockLayer": 5,
+      "rewardKind": "choice",
+      "triggerMode": "rotation",
+      "role": "control"
+    },
+    "effectList": [
+      {
+        "kind": "periodicPulse",
+        "label": "轮转时：若自身炎热超过 100 层，消耗 20 层炎热，移除敌方全部护甲与凝金，并施加 50 层裂甲",
+        "periodicPulse": {
+          "intervalSec": 8,
+          "label": "轮转时：若自身炎热超过 100 层，消耗 20 层炎热，移除敌方全部护甲与凝金，并施加 50 层裂甲",
+          "activationRequirements": {
+            "buffStackThresholds": [
+              {
+                "buffId": "heat",
+                "comparator": "atLeast",
+                "count": 101
+              }
+            ]
+          },
+          "removeBuffStacks": [
+            {
+              "target": "enemy",
+              "buffId": "armor",
+              "count": 999
+            },
+            {
+              "target": "enemy",
+              "buffId": "condensedMetal",
+              "count": 999
+            }
+          ],
+          "buffGains": [
+            {
+              "buffId": "crackArmor",
+              "count": 50,
+              "target": "enemy",
+              "polarity": "detrimental"
+            }
+          ]
+        },
+        "executors": [
+          {
+            "trigger": "onPeriodicPulse",
+            "type": "consumeBuffStacks",
+            "sourceBuffId": "heat",
+            "requiredStacks": 101,
+            "maxStacks": 20,
+            "consumeRatio": 1,
+            "label": "消耗 20 层炎热"
+          }
+        ]
+      }
+    ]
+  }
+}

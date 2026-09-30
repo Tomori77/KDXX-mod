@@ -1,0 +1,408 @@
+{
+  "mode": "add",
+  "item": {
+    "numericId": 190002,
+    "iconBasename": "shenyipin-scripture-fire",
+    "name": "神一品·荧惑烬火典·残卷",
+    "description": "凡品火属性功法残卷。入门首层无境界之限，其后自炼气三层起修，至炼气圆满、筑基初期而功成，每一层各授招式。",
+    "isPublished": true,
+    "isObtainable": true,
+    "category": "scripture",
+    "grade": "common",
+    "element": "fire",
+    "shape": [
+      [
+        1
+      ]
+    ],
+    "tags": [
+      "shenyipin",
+      "fire"
+    ],
+    "distribution": {
+      "channels": [
+        "bazaar"
+      ]
+    },
+    "effectList": [
+      {
+        "kind": "passive",
+        "label": "炎热层数上限 +20",
+        "passiveEffect": {
+          "type": "buffStackCapBonus",
+          "buffId": "heat",
+          "value": 20,
+          "label": "炎热层数上限 +20"
+        }
+      },
+      {
+        "kind": "passive",
+        "label": "闪避层数上限 +5",
+        "passiveEffect": {
+          "type": "buffStackCapBonus",
+          "buffId": "dodge",
+          "value": 5,
+          "label": "闪避层数上限 +5"
+        }
+      },
+      {
+        "kind": "triggered",
+        "label": "每生成 1 层炎热，获得 8 点修为",
+        "triggeredEffect": {
+          "trigger": "onBuffGain",
+          "eventBuffId": "heat",
+          "type": "gainCultivation",
+          "amount": 0,
+          "amountPerEventBuffStack": 8
+        }
+      },
+      {
+        "kind": "triggered",
+        "label": "每消耗 1 层炎热，获得 8 点修为",
+        "triggeredEffect": {
+          "trigger": "onBuffConsumed",
+          "eventBuffId": "heat",
+          "type": "gainCultivation",
+          "amount": 0,
+          "amountPerEventBuffStack": 8
+        }
+      },
+      {
+        "kind": "scriptureProgression",
+        "scriptureProgression": {
+          "layers": [
+            {
+              "effects": {
+                "effectList": [
+                  {
+                    "kind": "passive",
+                    "label": "炎热层数上限 +20",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "heat",
+                      "value": 20,
+                      "label": "炎热层数上限 +20"
+                    }
+                  },
+                  {
+                    "kind": "passive",
+                    "label": "闪避层数上限 +5",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "dodge",
+                      "value": 5,
+                      "label": "闪避层数上限 +5"
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每生成 1 层炎热，获得 8 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffGain",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 8
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每消耗 1 层炎热，获得 8 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffConsumed",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 8
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "effects": {
+                "effectList": [
+                  {
+                    "kind": "passive",
+                    "label": "炎热层数上限 +30",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "heat",
+                      "value": 30,
+                      "label": "炎热层数上限 +30"
+                    }
+                  },
+                  {
+                    "kind": "passive",
+                    "label": "闪避层数上限 +15",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "dodge",
+                      "value": 15,
+                      "label": "闪避层数上限 +15"
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每生成 1 层炎热，获得 12 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffGain",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 12
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每消耗 1 层炎热，获得 12 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffConsumed",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 12
+                    }
+                  }
+                ]
+              },
+              "requirements": {
+                "requiredRealmId": "qiRefining",
+                "requiredRealmLayer": 3,
+                "requiredCultivation": 1000
+              },
+              "breakthroughTargetProgress": 1000,
+              "breakthroughTimeLimitSec": 60,
+              "breakthroughCooldownSec": 60
+            },
+            {
+              "effects": {
+                "effectList": [
+                  {
+                    "kind": "passive",
+                    "label": "炎热层数上限 +40",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "heat",
+                      "value": 40,
+                      "label": "炎热层数上限 +40"
+                    }
+                  },
+                  {
+                    "kind": "passive",
+                    "label": "闪避层数上限 +25",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "dodge",
+                      "value": 25,
+                      "label": "闪避层数上限 +25"
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每生成 1 层炎热，获得 18 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffGain",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 18
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每消耗 1 层炎热，获得 18 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffConsumed",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 18
+                    }
+                  }
+                ]
+              },
+              "requirements": {
+                "requiredRealmId": "qiRefining",
+                "requiredRealmLayer": 5,
+                "requiredCultivation": 2000
+              },
+              "breakthroughTargetProgress": 2000,
+              "breakthroughTimeLimitSec": 60,
+              "breakthroughCooldownSec": 60
+            },
+            {
+              "effects": {
+                "effectList": [
+                  {
+                    "kind": "passive",
+                    "label": "炎热层数上限 +50",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "heat",
+                      "value": 50,
+                      "label": "炎热层数上限 +50"
+                    }
+                  },
+                  {
+                    "kind": "passive",
+                    "label": "闪避层数上限 +35",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "dodge",
+                      "value": 35,
+                      "label": "闪避层数上限 +35"
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每生成 1 层炎热，获得 24 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffGain",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 24
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每消耗 1 层炎热，获得 24 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffConsumed",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 24
+                    }
+                  }
+                ]
+              },
+              "requirements": {
+                "requiredRealmId": "qiRefining",
+                "requiredRealmLayer": 7,
+                "requiredCultivation": 5000
+              },
+              "breakthroughTargetProgress": 5000,
+              "breakthroughTimeLimitSec": 60,
+              "breakthroughCooldownSec": 60
+            },
+            {
+              "effects": {
+                "effectList": [
+                  {
+                    "kind": "passive",
+                    "label": "炎热层数上限 +60",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "heat",
+                      "value": 60,
+                      "label": "炎热层数上限 +60"
+                    }
+                  },
+                  {
+                    "kind": "passive",
+                    "label": "闪避层数上限 +45",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "dodge",
+                      "value": 45,
+                      "label": "闪避层数上限 +45"
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每生成 1 层炎热，获得 30 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffGain",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 30
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每消耗 1 层炎热，获得 30 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffConsumed",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 30
+                    }
+                  }
+                ]
+              },
+              "requirements": {
+                "requiredRealmId": "qiRefining",
+                "requiredRealmLayer": 10,
+                "requiredCultivation": 10000
+              },
+              "breakthroughTargetProgress": 10000,
+              "breakthroughTimeLimitSec": 60,
+              "breakthroughCooldownSec": 60
+            },
+            {
+              "effects": {
+                "effectList": [
+                  {
+                    "kind": "passive",
+                    "label": "炎热层数上限 +70",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "heat",
+                      "value": 70,
+                      "label": "炎热层数上限 +70"
+                    }
+                  },
+                  {
+                    "kind": "passive",
+                    "label": "闪避层数上限 +55",
+                    "passiveEffect": {
+                      "type": "buffStackCapBonus",
+                      "buffId": "dodge",
+                      "value": 55,
+                      "label": "闪避层数上限 +55"
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每生成 1 层炎热，获得 36 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffGain",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 36
+                    }
+                  },
+                  {
+                    "kind": "triggered",
+                    "label": "每消耗 1 层炎热，获得 36 点修为",
+                    "triggeredEffect": {
+                      "trigger": "onBuffConsumed",
+                      "eventBuffId": "heat",
+                      "type": "gainCultivation",
+                      "amount": 0,
+                      "amountPerEventBuffStack": 36
+                    }
+                  }
+                ]
+              },
+              "requirements": {
+                "requiredRealmId": "foundation",
+                "requiredRealmLayer": 1,
+                "requiredCultivation": 15000
+              },
+              "breakthroughTargetProgress": 15000,
+              "breakthroughTimeLimitSec": 60,
+              "breakthroughCooldownSec": 60
+            }
+          ]
+        }
+      }
+    ],
+    "price": 35
+  }
+}
