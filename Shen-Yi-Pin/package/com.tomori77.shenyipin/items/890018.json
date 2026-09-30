@@ -49,7 +49,7 @@
     "effectList": [
       {
         "kind": "effectNote",
-        "label": "长按释放：每有 1 层炎热，获得 1 层引雷、1 层闪避、1 层护甲；12 秒内不消耗法力与体力",
+        "label": "长按释放：每有 1 层炎热，获得 1 层引雷、1 层灼烧、1 层护甲、1 层沉重；6 秒内不消耗体力和法力",
         "executors": [
           {
             "trigger": "onActiveSpellCast",
@@ -64,7 +64,7 @@
           {
             "trigger": "onActiveSpellCast",
             "type": "buffGain",
-            "buffId": "dodge",
+            "buffId": "burning",
             "amount": 0,
             "amountPerSourceBuffStack": {
               "buffId": "heat",
@@ -83,10 +83,20 @@
           },
           {
             "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "heavy",
+            "amount": 0,
+            "amountPerSourceBuffStack": {
+              "buffId": "heat",
+              "valuePerStack": 1
+            }
+          },
+          {
+            "trigger": "onActiveSpellCast",
             "type": "temporaryActiveSpellCostModifier",
             "stat": "all",
             "amount": -999,
-            "durationSec": 12
+            "durationSec": 6
           }
         ]
       }
