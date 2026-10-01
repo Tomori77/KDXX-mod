@@ -1,5 +1,7 @@
 // src/domains/scripts.js — scripts@1 域：骨架、字段描述、校验、导入导出与摘要。
 
+import { zhCN } from "../i18n/zh-CN.js";
+
 const SCHEMA_FILE = "scripts@1 · script.schema.json";
 const RUNTIME_REF = "scripts@1 · runtime.json";
 
@@ -37,8 +39,48 @@ const UI_ENTRY_OPTIONS = [
   { value: "menu", label: "通用入口（menu）" }
 ];
 
+const MAX_CODE_BYTES = 262144;
+
 const SANDBOX_NOTE =
   "脚本代码（__code，运行在受限沙箱：无 async/import/require/网络/DOM；代码 ≤256KiB、输出 ≤64KiB、解释器 100ms、看门狗 2s）";
+
+const SANDBOX_RULES = [
+  { key: "async", re: /\basync\b/, api: "async", severity: "error" },
+  { key: "await", re: /\bawait\b/, api: "await", severity: "error" },
+  { key: "import", re: /(^|[^.\w])import\s/, api: "import", severity: "error" },
+  { key: "require", re: /\brequire\s*\(/, api: "require(", severity: "error" },
+  { key: "fetch", re: /\bfetch\s*\(/, api: "fetch(", severity: "error" },
+  { key: "XMLHttpRequest", re: /\bXMLHttpRequest\b/, api: "XMLHttpRequest", severity: "error" },
+  { key: "document", re: /\bdocument\s*\./, api: "document.", severity: "error" },
+  { key: "window", re: /\bwindow\s*\./, api: "window.", severity: "error" },
+  { key: "localStorage", re: /\blocalStorage\b/, api: "localStorage", severity: "error" },
+  { key: "eval", re: /\beval\s*\(/, api: "eval(", severity: "error" },
+  { key: "Function", re: /\bFunction\s*\(/, api: "Function(", severity: "error" },
+  { key: "Date", re: /\bDate\b/, api: "Date", severity: "warning" },
+  { key: "MathRandom", re: /\bMath\s*\.\s*random\s*\(/, api: "Math.random(", severity: "warning" },
+  { key: "console", re: /\bconsole\s*\./, api: "console.", severity: "warning" }
+];
+
+const UTF8_ENCODER = new TextEncoder();
+
+function utf8Bytes(text) {
+  return UTF8_ENCODER.encode(text).length;
+}
+
+function forbiddenLabel(key) {
+  const table = (zhCN.codeEditor && zhCN.codeEditor.forbidden) || {};
+  return table[key] || key;
+}
+
+function scanSandbox(text) {
+  const hits = [];
+  for (const rule of SANDBOX_RULES) {
+    if (rule.re.test(text)) {
+      hits.push(rule);
+    }
+  }
+  return hits;
+}
 
 export const meta = {
   key: "scripts",
@@ -253,11 +295,12 @@ export function fields() {
     },
     {
       path: "__code",
-      control: "text",
+      control: "code-editor",
       label: SANDBOX_NOTE,
       required: true,
       multiline: true,
       rows: 18,
+      maxBytes: MAX_CODE_BYTES,
       schema: RUNTIME_REF
     }
   ];
@@ -441,8 +484,33 @@ export function validateEntry(entry, ctx = {}) {
 
   if (typeof entry.__code !== "string" || entry.__code.trim() === "") {
     results.push(warning("__code.required", "__code", "尚未编写脚本代码（__code 不能为空）"));
-  } else if (entry.__code.length > 262144) {
-    results.push(error("__code.size", "__code", "脚本代码不得超过 256KiB"));
+  } else {
+    const bytes = utf8Bytes(entry.__code);
+    if (bytes > MAX_CODE_BYTES) {
+      results.push(error("__code.size", "__code", "脚本代码不得超过 256KiB（当前 " + bytes + " 字节）"));
+    }
+    const hits = scanSandbox(entry.__code);
+    const hard = hits.filter((rule) => rule.severity === "error");
+    const soft = hits.filter((rule) => rule.severity === "warning");
+    if (hard.length > 0) {
+      results.push(
+        error(
+          "sandbox.forbidden",
+          "__code",
+          "检测到沙箱禁用 API：" +
+            hard.map((rule) => rule.api + "（" + forbiddenLabel(rule.key) + "）").join("；")
+        )
+      );
+    }
+    if (soft.length > 0) {
+      results.push(
+        warning(
+          "sandbox.soft",
+          "__code",
+          "沙箱限制提示：" + soft.map((rule) => rule.api + "（" + forbiddenLabel(rule.key) + "）").join("；")
+        )
+      );
+    }
   }
 
   const modApiVersion = expectedModApiVersion(ctx);

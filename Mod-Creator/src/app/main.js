@@ -9,6 +9,15 @@ import { createField } from "../controls/field.js";
 import { downloadPackage } from "../io/export-mod.js";
 import { importArchive, importDomainJson } from "../io/import-mod.js";
 import { serializeProject, deserializeProject, projectFileName } from "../io/project-file.js";
+import {
+  listProjects,
+  saveProject,
+  loadProject,
+  deleteProject,
+  getAutosave,
+  setAutosave,
+  clearAutosave
+} from "../io/persistence.js";
 import { assessExport } from "../save/impact.js";
 import { warnImpact, summarizeForExport } from "../save/notify.js";
 import { openAiPanel } from "../ai/panel.js";
@@ -242,6 +251,32 @@ function importStateFrom(result) {
   reset(next);
 }
 
+function currentProjectId() {
+  const manifest = getState().meta.manifest;
+  const id = manifest && typeof manifest.id === "string" ? manifest.id.trim() : "";
+  return id.length > 0 ? id : null;
+}
+
+function projectHasContent(project) {
+  return Object.keys(project.content || {}).some((key) => {
+    if (key === "assets" || key === "unknown") {
+      return false;
+    }
+    const list = project.content[key];
+    return Array.isArray(list) && list.length > 0;
+  });
+}
+
+async function makeSnapshot(project) {
+  const id = currentProjectId();
+  if (!id || !projectHasContent(project)) {
+    return false;
+  }
+  const stamp = new Date().toISOString();
+  const record = await saveProject(id + "@snapshot-" + stamp, project);
+  return record !== null;
+}
+
 export function bootstrap() {
   if (typeof document === "undefined") {
     return;
@@ -331,6 +366,22 @@ export function bootstrap() {
   const aiDiffBtn = createEl("button", "pillbtn pc-toolbar-btn", zhCN.aiDiff);
   aiDiffBtn.addEventListener("click", () => openAiPanel("diff", aiDeps));
 
+  const newProjectBtn = createEl("button", "pillbtn pc-toolbar-btn pc-project-new", zhCN.newProject);
+  newProjectBtn.addEventListener("click", handleNewProject);
+
+  const openProjectBtn = createEl("button", "pillbtn pc-toolbar-btn pc-project-open", zhCN.openProject);
+  openProjectBtn.addEventListener("click", handleOpenProject);
+
+  const saveAsProjectBtn = createEl("button", "pillbtn pc-toolbar-btn pc-project-saveas", zhCN.saveAsProject);
+  saveAsProjectBtn.addEventListener("click", handleSaveAsProject);
+
+  const deleteProjectBtn = createEl("button", "pillbtn pc-toolbar-btn pc-project-delete", zhCN.deleteProject);
+  deleteProjectBtn.addEventListener("click", handleDeleteProject);
+
+  toolbar.appendChild(newProjectBtn);
+  toolbar.appendChild(openProjectBtn);
+  toolbar.appendChild(saveAsProjectBtn);
+  toolbar.appendChild(deleteProjectBtn);
   toolbar.appendChild(importModBtn);
   toolbar.appendChild(exportModBtn);
   toolbar.appendChild(importProjectBtn);
@@ -699,7 +750,107 @@ export function bootstrap() {
     return null;
   }
 
+  function chooseProject(records, promptText) {
+    if (records.length === 0) {
+      window.alert(zhCN.projectListEmpty);
+      return null;
+    }
+    const lines = records
+      .map((record, index) => index + 1 + ". " + record.name + "（" + record.id + "） · " + record.updatedAt)
+      .join("\n");
+    const answer = window.prompt(promptText + "\n" + lines, "1");
+    if (answer == null) {
+      return null;
+    }
+    const trimmed = answer.trim();
+    const byId = records.find((record) => record.id === trimmed);
+    if (byId) {
+      return byId.id;
+    }
+    const index = Number(trimmed);
+    if (Number.isInteger(index) && index >= 1 && index <= records.length) {
+      return records[index - 1].id;
+    }
+    return null;
+  }
+
+  async function handleNewProject() {
+    if (projectHasContent(getState()) && !window.confirm(zhCN.newProjectConfirm)) {
+      return;
+    }
+    const id = currentProjectId();
+    if (id) {
+      await saveProject(id, getState());
+    }
+    reset();
+    await clearAutosave();
+    window.alert(zhCN.newProjectDone);
+  }
+
+  async function handleOpenProject() {
+    const currentId = currentProjectId();
+    if (currentId && projectHasContent(getState())) {
+      await saveProject(currentId, getState());
+    }
+    const records = await listProjects();
+    const chosen = chooseProject(records, zhCN.openProjectPrompt);
+    if (!chosen) {
+      return;
+    }
+    const project = await loadProject(chosen);
+    if (!project) {
+      window.alert(zhCN.projectLoadFailed);
+      return;
+    }
+    reset(project);
+    window.alert(zhCN.projectLoaded);
+  }
+
+  async function handleSaveAsProject() {
+    const project = getState();
+    const suggested = currentProjectId() || "";
+    const answer = window.prompt(zhCN.saveAsProjectPrompt, suggested);
+    if (answer == null) {
+      return;
+    }
+    const id = answer.trim();
+    if (!id) {
+      return;
+    }
+    const record = await saveProject(id, project);
+    if (!record) {
+      window.alert(zhCN.projectSaveFailed);
+      return;
+    }
+    dispatch(setManifest({ id }));
+    window.alert(zhCN.projectSaved);
+  }
+
+  async function handleDeleteProject() {
+    const records = await listProjects();
+    const chosen = chooseProject(records, zhCN.deleteProjectPrompt);
+    if (!chosen) {
+      return;
+    }
+    const record = records.find((item) => item.id === chosen);
+    const label = record ? record.name + "（" + record.id + "）" : chosen;
+    if (!window.confirm(zhCN.deleteProjectConfirm + "：" + label)) {
+      return;
+    }
+    await deleteProject(chosen);
+    window.alert(zhCN.projectDeleted);
+  }
+
+  async function snapshotSafely() {
+    try {
+      await makeSnapshot(getState());
+    } catch {
+      void 0;
+    }
+  }
+
   async function handleImportMod(file) {
+    await snapshotSafely();
     try {
       const result = await importArchive(file);
       const warnings = Array.isArray(result.warnings) ? result.warnings : [];
@@ -721,6 +872,7 @@ export function bootstrap() {
     if (!file) {
       return;
     }
+    await snapshotSafely();
     try {
       const entry = await importDomainJson(file, domain);
       if (entry && typeof entry === "object" && !Array.isArray(entry)) {
@@ -744,6 +896,7 @@ export function bootstrap() {
     if (assessment.level !== "compatible" && !confirmExport(assessment)) {
       return;
     }
+    await snapshotSafely();
     try {
       await downloadPackage(project);
     } catch (error) {
@@ -753,6 +906,7 @@ export function bootstrap() {
 
   async function handleExportProject() {
     const project = getState();
+    await snapshotSafely();
     try {
       const text = await serializeProject(project);
       downloadText(text, projectFileName(project), "application/json");
@@ -766,6 +920,7 @@ export function bootstrap() {
     if (!file) {
       return;
     }
+    await snapshotSafely();
     try {
       const text = await readTextFile(file);
       const project = await deserializeProject(text);
@@ -776,17 +931,60 @@ export function bootstrap() {
     }
   }
 
+  const AUTOSAVE_DEBOUNCE_MS = 1500;
+  let autosaveTimer = null;
+  let autosaveSignature = null;
+
+  function projectSignature(project) {
+    try {
+      return JSON.stringify({ meta: project.meta, content: project.content });
+    } catch {
+      return null;
+    }
+  }
+
+  function scheduleAutosave() {
+    if (autosaveTimer !== null) {
+      clearTimeout(autosaveTimer);
+    }
+    autosaveTimer = setTimeout(async () => {
+      autosaveTimer = null;
+      const project = getState();
+      const signature = projectSignature(project);
+      if (signature !== null && signature === autosaveSignature) {
+        return;
+      }
+      const saved = await setAutosave(project);
+      if (saved) {
+        autosaveSignature = signature;
+      }
+    }, AUTOSAVE_DEBOUNCE_MS);
+  }
+
+  async function restoreAutosave() {
+    let project;
+    try {
+      project = await getAutosave();
+    } catch {
+      project = null;
+    }
+    if (!project || !projectHasContent(project)) {
+      return;
+    }
+    if (!window.confirm(zhCN.restoreAutosave)) {
+      await clearAutosave();
+      return;
+    }
+    autosaveSignature = projectSignature(project);
+    reset(project);
+    window.alert(zhCN.autosaveRestored);
+  }
+
   let lastImpactLevel = null;
   function refreshImpact() {
     const project = getState();
     const assessment = assessExport(project);
-    const hasContent = Object.keys(project.content || {}).some((key) => {
-      if (key === "assets" || key === "unknown") {
-        return false;
-      }
-      const list = project.content[key];
-      return Array.isArray(list) && list.length > 0;
-    });
+    const hasContent = projectHasContent(project);
     if (!hasContent || assessment.level === "compatible") {
       if (lastImpactLevel !== null) {
         warnImpact(null);
@@ -800,12 +998,19 @@ export function bootstrap() {
     warnImpact(assessment);
   }
 
+  let autosaveReady = false;
   subscribe(() => {
     render();
     refreshImpact();
+    if (autosaveReady) {
+      scheduleAutosave();
+    }
   });
   onRoute(render);
   render();
+  restoreAutosave().finally(() => {
+    autosaveReady = true;
+  });
 }
 
 try {

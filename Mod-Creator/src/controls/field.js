@@ -5,6 +5,7 @@ import { createMultiSelect } from "./multi-select.js";
 import { createNumber } from "./number.js";
 import { createToggle } from "./toggle.js";
 import { createText } from "./text.js";
+import { createCodeEditor } from "./code-editor.js";
 import { createJson } from "./json.js";
 import { createSaveCompatibility } from "./save-compatibility.js";
 import { createShapeGrid } from "./shape-grid.js";
@@ -21,6 +22,7 @@ const factories = {
   number: createNumber,
   toggle: createToggle,
   text: createText,
+  "code-editor": createCodeEditor,
   json: createJson,
   "save-compatibility": createSaveCompatibility,
   "shape-grid": createShapeGrid,

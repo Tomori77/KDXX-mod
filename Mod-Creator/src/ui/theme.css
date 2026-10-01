@@ -1188,3 +1188,135 @@ textarea.pc-json {
 .pc-distribution-editor .pc-field {
   margin: 6px 0;
 }
+
+.pc-project-new,
+.pc-project-open,
+.pc-project-saveas,
+.pc-project-delete {
+  border-color: var(--line);
+  color: var(--xuan);
+}
+
+.pc-project-new:hover,
+.pc-project-open:hover,
+.pc-project-saveas:hover,
+.pc-project-delete:hover {
+  border-color: var(--jin);
+  color: var(--jin-hi);
+}
+
+.pc-project-delete {
+  border-color: #a34a3a;
+  color: #e8b3a5;
+}
+
+.pc-project-menu,
+.pc-project-dialog {
+  background: var(--mo2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px 20px;
+  color: var(--xuan);
+}
+
+.pc-project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pc-project-item {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--mo3);
+  cursor: pointer;
+}
+
+.pc-project-item:hover,
+.pc-project-item.selected {
+  border-color: var(--jin);
+  color: var(--jin-hi);
+}
+
+.pc-code-editor {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--mo2);
+  overflow: hidden;
+}
+
+.pc-code-editor:focus-within {
+  border-color: var(--jin);
+}
+
+.pc-code-gutter {
+  grid-row: 1;
+  grid-column: 1;
+  margin: 0;
+  padding: 8px 8px 8px 10px;
+  background: var(--mo3);
+  border-right: 1px solid var(--line);
+  color: var(--xuan-dim);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: right;
+  white-space: pre;
+  overflow: hidden;
+  user-select: none;
+}
+
+.pc-code {
+  grid-row: 1;
+  grid-column: 2;
+  width: 100%;
+  min-height: 120px;
+  margin: 0;
+  padding: 8px 10px;
+  border: none;
+  outline: none;
+  resize: vertical;
+  background: var(--mo2);
+  color: var(--xuan);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow: auto;
+  tab-size: 2;
+}
+
+.pc-code.invalid {
+  color: #e8b3a5;
+}
+
+.pc-code-status {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 10px;
+  border-top: 1px solid var(--line);
+  background: var(--mo3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--xuan-dim);
+}
+
+.pc-code-count.invalid {
+  color: #e8b3a5;
+}
+
+.pc-code-hint {
+  margin-left: auto;
+  opacity: 0.75;
+  text-align: right;
+}
