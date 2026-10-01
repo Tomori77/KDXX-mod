@@ -1,0 +1,16 @@
+# 项目守则：仅本地，不随 git 上传
+/AGENTS.md
+
+# 本地文档与无需上传的文件
+/docs/
+
+# 由 tools/sync-reference.py 生成的机读词典（源在 docs/Reference/ModSDK-*）
+/src/generated/
+
+# 第三方单文件库（按需在 docs/DECISIONS.md 登记后决定是否提交）
+/vendor/
+
+# 运行/调试产物
+*.log
+*.tmp
+_scratch/
