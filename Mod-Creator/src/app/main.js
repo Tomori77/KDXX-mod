@@ -2,9 +2,9 @@
 import { items as officialItems } from "../generated/catalogs.js";
 import { zhCN } from "../i18n/zh-CN.js";
 import { getState, dispatch, subscribe, reset } from "./store.js";
-import { setManifest, setUi, addEntry, removeEntry, updateEntry, idOf } from "./actions.js";
+import { setManifest, setUi, addEntry, removeEntry, updateEntry, setAsset, idOf } from "./actions.js";
 import { getRoute, navigate, onRoute } from "./router.js";
-import { domainList } from "../domains/index.js";
+import { domainList, domainModules } from "../domains/index.js";
 import { createField } from "../controls/field.js";
 import { downloadPackage } from "../io/export-mod.js";
 import { importArchive, importDomainJson } from "../io/import-mod.js";
@@ -34,6 +34,87 @@ function readPath(source, path) {
 
 function manifestKey(path) {
   return path.indexOf("manifest.") === 0 ? path.slice("manifest.".length) : path;
+}
+
+const ASSET_PICKER_PATHS = {
+  items: ["item.iconBasename"],
+  enemies: ["portraitImageBasename", "badgeImageBasename"]
+};
+
+const assetDeps = {
+  getAsset(basename) {
+    const content = getState().content;
+    const icons = content && content.assets ? content.assets.icons : null;
+    return icons ? icons[basename] : undefined;
+  },
+  setAsset(basename, asset) {
+    dispatch(setAsset(basename, asset));
+  }
+};
+
+function withAssetPicker(domain, descriptors) {
+  const paths = ASSET_PICKER_PATHS[domain];
+  if (!paths) {
+    return descriptors;
+  }
+  return descriptors.map((descriptor) =>
+    paths.includes(descriptor.path)
+      ? { ...descriptor, control: "asset-picker", deps: assetDeps }
+      : descriptor
+  );
+}
+
+function dependencyPath(descriptor) {
+  if (descriptor.optionsBy) {
+    return descriptor.optionsBy;
+  }
+  if (descriptor.optionsSource && typeof descriptor.optionsSource === "object") {
+    const source = descriptor.optionsSource;
+    return source.field || source.mapIdPath || source.dependsOn || null;
+  }
+  return null;
+}
+
+function linkedDependencyPaths(descriptors) {
+  const paths = new Set();
+  for (const descriptor of descriptors) {
+    const path = dependencyPath(descriptor);
+    if (path) {
+      paths.add(path);
+    }
+  }
+  return paths;
+}
+
+function mergePatch(base, extra) {
+  const out = { ...base };
+  for (const key of Object.keys(extra)) {
+    if (isPlainObject(base[key]) && isPlainObject(extra[key])) {
+      out[key] = mergePatch(base[key], extra[key]);
+    } else {
+      out[key] = extra[key];
+    }
+  }
+  return out;
+}
+
+function prunePatch(patch, source) {
+  if (!isPlainObject(patch) || !isPlainObject(source)) {
+    return patch;
+  }
+  const out = {};
+  for (const key of Object.keys(patch)) {
+    const next = patch[key];
+    if (isPlainObject(next) && isPlainObject(source[key])) {
+      const pruned = prunePatch(next, source[key]);
+      if (Object.keys(pruned).length > 0) {
+        out[key] = pruned;
+      }
+    } else if (next !== undefined) {
+      out[key] = next;
+    }
+  }
+  return out;
 }
 
 function coerceValue(descriptor, value) {
@@ -93,6 +174,8 @@ export function setByPath(source, path, value) {
   cursor[keys[keys.length - 1]] = value;
   return patch;
 }
+
+const ITEM_ID_MANUAL_FLAG = Symbol("itemIdManuallyEdited");
 
 function fieldsFor(module, entry) {
   const all = module.fields();
@@ -416,7 +499,7 @@ export function bootstrap() {
     const toolbar = createEl("div", "pc-domain-toolbar");
     const addBtn = createEl("button", "pillbtn pc-domain-add", zhCN.addEntry);
     addBtn.addEventListener("click", () => {
-      const entry = module.createEntry();
+      const entry = domain === "items" ? module.createEntry({ existingEntries: domainEntries("items") }) : module.createEntry();
       dispatch(addEntry(domain, entry));
       state.selectedRoute = domain;
       state.selectedIndex = domainEntries(domain).length - 1;
@@ -473,14 +556,42 @@ export function bootstrap() {
     const fieldsCard = createEl("div", "card pc-domain-fields");
     fieldsCard.appendChild(createEl("h3", null, module.summarize(selected)));
     const fieldsWrap = createEl("div", "mc-fields");
-    for (const descriptor of fieldsFor(module, selected)) {
+    const descriptors = withAssetPicker(domain, fieldsFor(module, selected));
+    const linkedPaths = linkedDependencyPaths(descriptors);
+    const fieldContext = {
+      getValue: (path) => getByPath(selected, path),
+      deps: assetDeps
+    };
+    for (const descriptor of descriptors) {
       const value = getByPath(selected, descriptor.path);
       const field = createField(descriptor, value, (next) => {
-        const patch = setByPath(selected, descriptor.path, next);
-        if (patch) {
-          dispatch(updateEntry(domain, idOf(selected, domain), patch));
+        let patch = setByPath(selected, descriptor.path, next);
+        if (!patch) {
+          return;
         }
-      });
+        if (domain === "items" && descriptor.path === "item.category") {
+          if (!selected[ITEM_ID_MANUAL_FLAG]) {
+            patch = mergePatch(patch, { item: { numericId: module.nextNumericId(domainEntries("items"), next) } });
+          }
+          state.renderedIndex = undefined;
+        }
+        if (domain === "items" && descriptor.path === "item.numericId") {
+          selected[ITEM_ID_MANUAL_FLAG] = true;
+          state.renderedIndex = undefined;
+        }
+        if (linkedPaths.has(descriptor.path)) {
+          for (const linked of descriptors) {
+            if (dependencyPath(linked) !== descriptor.path) {
+              continue;
+            }
+            const linkedPatch = prunePatch(setByPath(selected, linked.path, undefined), selected);
+            if (Object.keys(linkedPatch).length > 0) {
+              patch = mergePatch(patch, linkedPatch);
+            }
+          }
+        }
+        dispatch(updateEntry(domain, idOf(selected, domain), patch));
+      }, fieldContext);
       fieldsWrap.appendChild(field);
     }
     fieldsCard.appendChild(fieldsWrap);

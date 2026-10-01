@@ -10,6 +10,7 @@ import { createSaveCompatibility } from "./save-compatibility.js";
 import { createShapeGrid } from "./shape-grid.js";
 import { createEffectEditor } from "./effect-editor.js";
 import { createConditionEditor } from "./condition-editor.js";
+import { createAssetPicker } from "./asset-picker.js";
 
 const factories = {
   select: createSelect,
@@ -22,9 +23,10 @@ const factories = {
   "shape-grid": createShapeGrid,
   "effect-editor": createEffectEditor,
   "condition-editor": createConditionEditor,
+  "asset-picker": createAssetPicker,
 };
 
-export function createField(descriptor, value, onChange) {
+export function createField(descriptor, value, onChange, context) {
   const wrapper = document.createElement("div");
   wrapper.className = "pc-field";
 
@@ -44,8 +46,7 @@ export function createField(descriptor, value, onChange) {
     note.textContent = zhCN.unsupported + "：" + controlLabel(descriptor.control);
     wrapper.appendChild(note);
   } else {
-    // multi-select 的 freeform 由 items.js 描述符标记；此处原样透传 descriptor，无需另造参数。
-    const control = factory(descriptor, value, onChange);
+    const control = factory(descriptor, value, onChange, context);
     control.dataset.path = descriptor.path;
     wrapper.appendChild(control);
   }

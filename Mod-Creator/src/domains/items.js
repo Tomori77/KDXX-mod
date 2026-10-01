@@ -107,11 +107,34 @@ function isValidShape(shape) {
   );
 }
 
+export function nextNumericId(existingEntries, category) {
+  const range = CATEGORY_RANGES[category] || CATEGORY_RANGES.material;
+  const used = new Set(OFFICIAL_IDS);
+  const list = Array.isArray(existingEntries)
+    ? existingEntries
+    : collectEntries(existingEntries, "items");
+  for (const entry of list) {
+    const id = numericIdOf(entry);
+    if (id != null) {
+      used.add(id);
+    }
+  }
+  for (let id = range[0]; id <= range[1]; id++) {
+    if (!used.has(id)) {
+      return id;
+    }
+  }
+  return range[0];
+}
+
 export function createEntry(partial = {}) {
+  const { existingEntries, ...rest } = isPlainObject(partial) ? partial : {};
+  const partialItem = isPlainObject(rest.item) ? rest.item : {};
+  const category = partialItem.category || "material";
   const skeleton = {
     mode: "add",
     item: {
-      numericId: null,
+      numericId: nextNumericId(existingEntries, category),
       iconBasename: "",
       name: "",
       description: "",
@@ -125,9 +148,9 @@ export function createEntry(partial = {}) {
       effectList: []
     }
   };
-  const next = { ...skeleton, ...partial };
-  if (isPlainObject(partial.item)) {
-    next.item = { ...skeleton.item, ...partial.item };
+  const next = { ...skeleton, ...rest };
+  if (isPlainObject(rest.item)) {
+    next.item = { ...skeleton.item, ...rest.item };
   }
   return next;
 }

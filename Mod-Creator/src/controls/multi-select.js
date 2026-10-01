@@ -1,10 +1,10 @@
-import { resolveOptions } from "./select.js";
+import { optionsFor } from "./select.js";
 import { zhCN } from "../i18n/zh-CN.js";
 
-export function createMultiSelect(descriptor, value, onChange) {
+export function createMultiSelect(descriptor, value, onChange, context) {
   const el = document.createElement("div");
   el.className = "pc-multi-select";
-  const list = resolveOptions(descriptor.options, descriptor.optionsGroup);
+  const list = optionsFor(descriptor, context);
   const freeform = descriptor.freeform === true || list.length === 0;
   const known = new Set(list.map((opt) => String(opt.value)));
   const selected = new Set(Array.isArray(value) ? value.map(String) : []);

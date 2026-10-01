@@ -255,7 +255,8 @@ export function validateProject(project) {
   return results;
 }
 
-export function toFiles(entry, ctx = {}) {
+export function toFiles(entriesOrEntry, ctx = {}) {
+  const entry = Array.isArray(entriesOrEntry) ? entriesOrEntry[0] : entriesOrEntry;
   if (!isPlainObject(entry)) {
     throw new Error("toFiles: entry 必须是对象");
   }
