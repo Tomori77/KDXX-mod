@@ -42,7 +42,7 @@
     "effectList": [
       {
         "kind": "effectNote",
-        "label": "长按释放：10 秒内所有道具获取修为 +200%（×3），且所有道具获得炎热时额外获得 10 层",
+        "label": "长按释放：10 秒内所有修为获取 +200%（×3）",
         "executors": [
           {
             "trigger": "onActiveSpellCast",
@@ -50,16 +50,22 @@
             "amount": 3,
             "durationSec": 10,
             "support": "cultivationOnly"
-          },
-          {
-            "trigger": "onActiveSpellCast",
-            "type": "temporaryBuffGainMirror",
-            "sourceBuffId": "heat",
-            "targetBuffId": "heat",
-            "countPerSourceStack": 10,
-            "durationSec": 10
           }
         ]
+      },
+      {
+        "kind": "passive",
+        "label": "所有道具获得炎热时，额外获得 10 层炎热",
+        "passiveEffect": {
+          "type": "buffGainMirror",
+          "sourceBuffId": "heat",
+          "targetBuffId": "heat",
+          "countPerGain": 10,
+          "sourceTarget": {
+            "type": "any"
+          },
+          "label": "所有道具获得炎热时，额外获得 10 层炎热"
+        }
       }
     ]
   }

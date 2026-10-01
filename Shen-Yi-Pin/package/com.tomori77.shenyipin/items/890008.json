@@ -49,7 +49,7 @@
     "effectList": [
       {
         "kind": "effectNote",
-        "label": "长按释放：10 秒内所有道具获取修为 +100%（×2），且所有道具获得露水时额外获得 10 层",
+        "label": "长按释放：10 秒内所有修为获取 +100%（×2）",
         "executors": [
           {
             "trigger": "onActiveSpellCast",
@@ -57,16 +57,22 @@
             "amount": 2,
             "durationSec": 10,
             "support": "cultivationOnly"
-          },
-          {
-            "trigger": "onActiveSpellCast",
-            "type": "temporaryBuffGainMirror",
-            "sourceBuffId": "dew",
-            "targetBuffId": "dew",
-            "countPerSourceStack": 10,
-            "durationSec": 10
           }
         ]
+      },
+      {
+        "kind": "passive",
+        "label": "所有道具获得露水时，额外获得 10 层露水",
+        "passiveEffect": {
+          "type": "buffGainMirror",
+          "sourceBuffId": "dew",
+          "targetBuffId": "dew",
+          "countPerGain": 10,
+          "sourceTarget": {
+            "type": "any"
+          },
+          "label": "所有道具获得露水时，额外获得 10 层露水"
+        }
       }
     ]
   }

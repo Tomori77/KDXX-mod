@@ -28,36 +28,59 @@
       "sourceScriptureNumericId": 190001,
       "unlockLayer": 4,
       "rewardKind": "choice",
-      "triggerMode": "active",
-      "role": "support",
-      "activeCast": {
-        "cooldownSec": 5
-      }
+      "triggerMode": "conditional",
+      "role": "support"
     },
     "effectList": [
       {
-        "kind": "effectNote",
-        "label": "长按释放，消耗 20 层露水，使全部道具轮转进度快进 2 秒",
-        "executors": [
-          {
-            "trigger": "onActiveSpellCast",
-            "type": "advanceRotationProgress",
-            "target": {
-              "type": "all"
-            },
-            "deltaMs": 2000
+        "kind": "triggered",
+        "label": "水属性招式轮转后，全部道具轮转进度快进 1 秒",
+        "triggeredEffect": {
+          "trigger": "onPeriodicPulse",
+          "type": "advanceRotationProgress",
+          "target": {
+            "type": "all"
           },
-          {
-            "trigger": "onActiveSpellCast",
-            "type": "damageHealth",
-            "amount": 0,
-            "consumeSourceBuffStacks": {
-              "buffId": "dew",
-              "requiredStacks": 20,
-              "consumeRatio": 1
+          "deltaMs": 1000,
+          "eventSource": {
+            "target": {
+              "type": "other"
+            },
+            "filter": {
+              "categories": [
+                "spell"
+              ],
+              "elements": [
+                "water"
+              ]
             }
           }
-        ]
+        }
+      },
+      {
+        "kind": "triggered",
+        "label": "水属性招式使用时，全部道具轮转进度快进 1 秒",
+        "triggeredEffect": {
+          "trigger": "onActiveSpellCast",
+          "type": "advanceRotationProgress",
+          "target": {
+            "type": "all"
+          },
+          "deltaMs": 1000,
+          "eventSource": {
+            "target": {
+              "type": "any"
+            },
+            "filter": {
+              "categories": [
+                "spell"
+              ],
+              "elements": [
+                "water"
+              ]
+            }
+          }
+        }
       }
     ]
   }
