@@ -1320,3 +1320,57 @@ textarea.pc-json {
   opacity: 0.75;
   text-align: right;
 }
+
+:focus-visible {
+  outline: 2px solid var(--jin-hi);
+  outline-offset: 2px;
+}
+
+.pc-entry-item:focus-visible,
+.pc-nav-item:focus-visible,
+.pillbtn:focus-visible,
+.pc-btn:focus-visible,
+.pc-ai-btn:focus-visible,
+.pc-shape-grid-btn:focus-visible,
+.pc-asset-picker-choose:focus-visible,
+.pc-multi-tag-remove:focus-visible {
+  outline: 2px solid var(--jin-hi);
+  outline-offset: 2px;
+}
+
+.pc-entry-item:focus,
+.pc-entry-item.is-focus {
+  border-color: var(--jin-hi);
+  background: var(--mo3);
+  color: var(--jin-hi);
+  box-shadow: inset 0 0 0 1px var(--jin-hi);
+}
+
+.pc-entry-item.selected::before {
+  content: "▸";
+  margin-right: 6px;
+  color: var(--jin-hi);
+}
+
+.pc-nav-item.is-active {
+  border-color: var(--jin-hi);
+  box-shadow: inset 0 0 0 1px var(--jin-hi);
+}
+
+.pc-key-hint {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--mo3);
+  color: var(--xuan-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.pc-ai-panel:focus-visible,
+.pc-ai-panel:focus {
+  outline: 2px solid var(--jin-hi);
+  outline-offset: 2px;
+}

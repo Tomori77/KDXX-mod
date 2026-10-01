@@ -14,7 +14,17 @@ export function createText(descriptor, value, onChange) {
   }
   el.value = value == null ? "" : String(value);
   const pattern = descriptor && descriptor.pattern ? new RegExp(descriptor.pattern) : null;
+  let composing = false;
+  el.addEventListener("compositionstart", () => {
+    composing = true;
+  });
+  el.addEventListener("compositionend", () => {
+    composing = false;
+  });
   el.addEventListener("input", () => {
+    if (composing) {
+      return;
+    }
     const raw = el.value;
     if (pattern && !pattern.test(raw)) {
       el.classList.add("invalid");

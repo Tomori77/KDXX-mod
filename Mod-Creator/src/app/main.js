@@ -1,7 +1,7 @@
 ﻿import { VERSION } from "../generated/VERSION.js";
 import { items as officialItems } from "../generated/catalogs.js";
 import { zhCN } from "../i18n/zh-CN.js";
-import { getState, dispatch, subscribe, reset } from "./store.js";
+import { getState, dispatch, subscribe, reset, undo, redo } from "./store.js";
 import { setManifest, setUi, addEntry, removeEntry, updateEntry, setAsset, idOf } from "./actions.js";
 import { getRoute, navigate, onRoute } from "./router.js";
 import { domainList, domainModules } from "../domains/index.js";
@@ -186,6 +186,28 @@ export function setByPath(source, path, value) {
 
 const ITEM_ID_MANUAL_FLAG = Symbol("itemIdManuallyEdited");
 
+function createImeGuardedField(descriptor, value, onChange, context) {
+  const textLike = descriptor.control === "text" || descriptor.control === "json";
+  let composing = false;
+  const guarded = textLike
+    ? (next) => {
+        if (!composing) {
+          onChange(next);
+        }
+      }
+    : onChange;
+  const field = createField(descriptor, value, guarded, context);
+  if (textLike) {
+    field.addEventListener("compositionstart", () => {
+      composing = true;
+    });
+    field.addEventListener("compositionend", () => {
+      composing = false;
+    });
+  }
+  return field;
+}
+
 function fieldsFor(module, entry) {
   const all = module.fields();
   const mode = entry && entry.mode;
@@ -295,6 +317,7 @@ export function bootstrap() {
     renderedMode: undefined,
     selectedRoute: undefined,
     selectedIndex: null,
+    pendingFocusIndex: null,
     validationEl: null,
     validationTarget: null,
     listRows: [],
@@ -361,10 +384,44 @@ export function bootstrap() {
     getProject: () => getState(),
     applyProject: (project) => reset(project)
   };
+  function openModalPanel(mode) {
+    const trigger = document.activeElement;
+    const panel = openAiPanel(mode, aiDeps);
+    if (!panel) {
+      return null;
+    }
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-modal", "true");
+    panel.setAttribute("aria-label", mode === "diff" ? zhCN.aiDiffTitle : zhCN.aiAdviceTitle);
+    panel.tabIndex = -1;
+    const overlay = panel.parentNode;
+    if (overlay && typeof overlay.setAttribute === "function") {
+      overlay.setAttribute("role", "presentation");
+    }
+    const focusables = panel.querySelectorAll("button, input, textarea, select, a[href], [tabindex]");
+    const first = focusables.length > 0 ? focusables[0] : panel;
+    setTimeout(() => {
+      if (typeof first.focus === "function") {
+        first.focus();
+      }
+    }, 0);
+    if (overlay && typeof MutationObserver !== "undefined") {
+      const observer = new MutationObserver(() => {
+        if (!overlay.isConnected) {
+          observer.disconnect();
+          if (trigger && typeof trigger.focus === "function") {
+            trigger.focus();
+          }
+        }
+      });
+      observer.observe(document.body, { childList: true });
+    }
+    return panel;
+  }
   const aiAdviceBtn = createEl("button", "pillbtn pc-toolbar-btn", zhCN.aiAdvice);
-  aiAdviceBtn.addEventListener("click", () => openAiPanel("advice", aiDeps));
+  aiAdviceBtn.addEventListener("click", () => openModalPanel("advice"));
   const aiDiffBtn = createEl("button", "pillbtn pc-toolbar-btn", zhCN.aiDiff);
-  aiDiffBtn.addEventListener("click", () => openAiPanel("diff", aiDeps));
+  aiDiffBtn.addEventListener("click", () => openModalPanel("diff"));
 
   const newProjectBtn = createEl("button", "pillbtn pc-toolbar-btn pc-project-new", zhCN.newProject);
   newProjectBtn.addEventListener("click", handleNewProject);
@@ -402,11 +459,15 @@ export function bootstrap() {
   body.style.gap = "0";
 
   const nav = createEl("nav", "mc-nav");
+  nav.setAttribute("role", "navigation");
+  nav.setAttribute("aria-label", zhCN.navLabel);
   nav.style.minWidth = "180px";
   nav.style.padding = "12px";
   nav.style.borderRight = "1px solid var(--line)";
 
   const main = createEl("main", "mc-main");
+  main.setAttribute("role", "main");
+  main.setAttribute("aria-label", zhCN.mainLabel);
   main.style.flex = "1";
   main.style.padding = "16px";
 
@@ -429,6 +490,10 @@ export function bootstrap() {
     nav.appendChild(button);
   }
 
+  const keyHint = createEl("p", "pc-key-hint", zhCN.hintKeys);
+  keyHint.setAttribute("role", "note");
+  nav.appendChild(keyHint);
+
   body.appendChild(nav);
   body.appendChild(main);
   shell.appendChild(topbar);
@@ -438,6 +503,12 @@ export function bootstrap() {
   function updateNav(route) {
     for (const [key, button] of state.navButtons) {
       const active = key === route;
+      button.classList.toggle("is-active", active);
+      if (active) {
+        button.setAttribute("aria-current", "page");
+      } else {
+        button.removeAttribute("aria-current");
+      }
       button.style.background = active ? "var(--jin)" : "var(--mo3)";
       button.style.color = active ? "var(--mo)" : "var(--jin-hi)";
     }
@@ -455,6 +526,29 @@ export function bootstrap() {
     if (getState().ui.selectedId !== id) {
       dispatch(setUi({ selectedId: id == null ? null : id }));
     }
+  }
+
+  function selectRow(domain, list, index) {
+    state.selectedRoute = domain;
+    state.selectedIndex = index;
+    syncSelectedId(domain, list, index);
+    render();
+  }
+
+  function removeRowByIndex(domain, list, index, needsConfirm) {
+    const selected = list[index];
+    if (!selected) {
+      return;
+    }
+    if (needsConfirm && !window.confirm(zhCN.removeEntryConfirm)) {
+      return;
+    }
+    dispatch(removeEntry(domain, idOf(selected, domain)));
+    const nextList = domainEntries(domain);
+    state.selectedIndex = nextList.length === 0 ? null : Math.min(index, nextList.length - 1);
+    syncSelectedId(domain, nextList, state.selectedIndex);
+    state.pendingFocusIndex = state.selectedIndex;
+    render();
   }
 
   function resolveSelection(route) {
@@ -499,6 +593,9 @@ export function bootstrap() {
 
   function renderValidation(container, module, entry) {
     container.innerHTML = "";
+    container.setAttribute("role", "status");
+    container.setAttribute("aria-live", "polite");
+    container.setAttribute("aria-label", zhCN.validationTitle);
     container.appendChild(createEl("h3", null, zhCN.validationTitle));
     if (entry == null) {
       container.appendChild(createEl("p", "pc-validate-empty", zhCN.validationNoSelection));
@@ -526,7 +623,7 @@ export function bootstrap() {
     const fieldsWrap = createEl("div", "mc-fields");
     for (const descriptor of manifestModule.fields()) {
       const value = readPath(data, descriptor.path);
-      const field = createField(descriptor, value, (next) => {
+      const field = createImeGuardedField(descriptor, value, (next) => {
         dispatch(setManifest({ [manifestKey(descriptor.path)]: coerceValue(descriptor, next) }));
       });
       fieldsWrap.appendChild(field);
@@ -563,12 +660,7 @@ export function bootstrap() {
       if (!selected) {
         return;
       }
-      const removeIndex = index;
-      dispatch(removeEntry(domain, idOf(selected, domain)));
-      const nextList = domainEntries(domain);
-      state.selectedIndex = nextList.length === 0 ? null : Math.min(removeIndex, nextList.length - 1);
-      syncSelectedId(domain, nextList, state.selectedIndex);
-      render();
+      removeRowByIndex(domain, list, index, true);
     });
     toolbar.appendChild(addBtn);
     toolbar.appendChild(removeBtn);
@@ -582,21 +674,54 @@ export function bootstrap() {
       listCard.appendChild(createEl("p", "pc-entry-empty", zhCN.entryEmpty));
     } else {
       const ul = createEl("ul", "pc-domain-list");
+      ul.setAttribute("role", "listbox");
+      ul.setAttribute("aria-label", zhCN.listboxLabel);
       list.forEach((entry, rowIndex) => {
         const li = createEl("li", "pc-entry-item");
-        li.classList.toggle("selected", rowIndex === index);
+        li.setAttribute("role", "option");
+        li.tabIndex = 0;
+        const isSelected = rowIndex === index;
+        li.classList.toggle("selected", isSelected);
+        li.setAttribute("aria-selected", isSelected ? "true" : "false");
         const label = createEl("span", "pc-entry-label", module.summarize(entry));
         li.appendChild(label);
         li.addEventListener("click", () => {
-          state.selectedRoute = domain;
-          state.selectedIndex = rowIndex;
-          syncSelectedId(domain, list, rowIndex);
-          render();
+          selectRow(domain, list, rowIndex);
         });
-        state.listRows.push({ entry, label });
+        li.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+            event.preventDefault();
+            state.pendingFocusIndex = rowIndex;
+            selectRow(domain, list, rowIndex);
+            return;
+          }
+          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            if (list.length === 0) {
+              return;
+            }
+            event.preventDefault();
+            const delta = event.key === "ArrowDown" ? 1 : -1;
+            const next = Math.max(0, Math.min(list.length - 1, rowIndex + delta));
+            state.pendingFocusIndex = next;
+            selectRow(domain, list, next);
+            return;
+          }
+          if (event.key === "Delete") {
+            event.preventDefault();
+            removeRowByIndex(domain, list, rowIndex, true);
+          }
+        });
+        state.listRows.push({ entry, label, li });
         ul.appendChild(li);
       });
       listCard.appendChild(ul);
+      if (state.pendingFocusIndex != null) {
+        const focusRow = state.listRows[state.pendingFocusIndex];
+        state.pendingFocusIndex = null;
+        if (focusRow) {
+          setTimeout(() => focusRow.li.focus(), 0);
+        }
+      }
     }
     container.appendChild(listCard);
 
@@ -615,7 +740,7 @@ export function bootstrap() {
     };
     for (const descriptor of descriptors) {
       const value = getByPath(selected, descriptor.path);
-      const field = createField(descriptor, value, (next) => {
+      const field = createImeGuardedField(descriptor, value, (next) => {
         let patch = setByPath(selected, descriptor.path, next);
         if (!patch) {
           return;
@@ -723,6 +848,7 @@ export function bootstrap() {
       state.renderedMode = mode;
       renderMain(route, index);
     } else {
+      state.pendingFocusIndex = null;
       refreshList();
       refreshValidation();
     }
@@ -997,6 +1123,41 @@ export function bootstrap() {
     }
     warnImpact(assessment);
   }
+
+  function isEditableTarget(target) {
+    if (!target || typeof target.tagName !== "string") {
+      return false;
+    }
+    const tag = target.tagName.toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select") {
+      return true;
+    }
+    return target.isContentEditable === true;
+  }
+
+  function onGlobalKeyDown(event) {
+    if (event.defaultPrevented) {
+      return;
+    }
+    if (!(event.ctrlKey || event.metaKey) || event.altKey) {
+      return;
+    }
+    const key = typeof event.key === "string" ? event.key.toLowerCase() : "";
+    if (key !== "z" && key !== "y") {
+      return;
+    }
+    if (key === "y" || event.shiftKey) {
+      event.preventDefault();
+      redo();
+      return;
+    }
+    if (key === "z" && !isEditableTarget(event.target)) {
+      event.preventDefault();
+      undo();
+    }
+  }
+
+  document.addEventListener("keydown", onGlobalKeyDown);
 
   let autosaveReady = false;
   subscribe(() => {
