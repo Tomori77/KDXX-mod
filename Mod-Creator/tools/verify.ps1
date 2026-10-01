@@ -89,5 +89,23 @@ try {
   $failures.Add('(c) error: ' + $_.Exception.Message)
 }
 
+# (d) domain contract smoke test.
+try {
+  $smokeScript = Join-Path $repoRoot 'tools\smoke-domains.mjs'
+  if (-not (Test-Path -LiteralPath $smokeScript)) {
+    $failures.Add('(d) missing tools/smoke-domains.mjs')
+  } else {
+    $smokeOutput = & node $smokeScript 2>&1
+    if ($LASTEXITCODE -ne 0) {
+      $failures.Add('(d) node tools/smoke-domains.mjs failed')
+      foreach ($line in $smokeOutput) { Write-Host $line }
+    } else {
+      $passes.Add('(d) node tools/smoke-domains.mjs passed')
+    }
+  }
+} catch {
+  $failures.Add('(d) error: ' + $_.Exception.Message)
+}
+
 Write-Report
 if ($failures.Count -eq 0) { exit 0 } else { exit 1 }
