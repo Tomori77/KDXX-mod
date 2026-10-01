@@ -33,38 +33,33 @@
       "sourceScriptureNumericId": 190002,
       "unlockLayer": 5,
       "rewardKind": "choice",
-      "triggerMode": "conditional",
-      "role": "support"
+      "triggerMode": "active",
+      "role": "support",
+      "activeCast": {
+        "cooldownSec": 10
+      }
     },
     "effectList": [
       {
-        "kind": "passive",
-        "label": "所有修为获取 ×2",
-        "passiveEffect": {
-          "type": "globalOutputModifier",
-          "stat": "cultivation",
-          "bonus": 1,
-          "label": "所有修为获取 ×2"
-        }
-      },
-      {
-        "kind": "passive",
-        "label": "所有火属性道具获得炎热时额外获得 10 层",
-        "passiveEffect": {
-          "type": "buffGainMirror",
-          "sourceBuffId": "heat",
-          "targetBuffId": "heat",
-          "countPerGain": 10,
-          "sourceTarget": {
-            "type": "any"
+        "kind": "effectNote",
+        "label": "长按释放：10 秒内所有道具获取修为 +200%（×3），且所有道具获得炎热时额外获得 10 层",
+        "executors": [
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "temporaryAllCultivationGainMultiplier",
+            "amount": 3,
+            "durationSec": 10,
+            "support": "cultivationOnly"
           },
-          "sourceFilter": {
-            "elements": [
-              "fire"
-            ]
-          },
-          "label": "所有火属性道具获得炎热时额外获得 10 层"
-        }
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "temporaryBuffGainMirror",
+            "sourceBuffId": "heat",
+            "targetBuffId": "heat",
+            "countPerSourceStack": 10,
+            "durationSec": 10
+          }
+        ]
       }
     ]
   }

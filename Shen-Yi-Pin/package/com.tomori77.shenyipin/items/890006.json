@@ -31,19 +31,21 @@
       "triggerMode": "active",
       "role": "support",
       "activeCast": {
-        "cooldownSec": 10
+        "cooldownSec": 5
       }
     },
     "effectList": [
       {
         "kind": "effectNote",
-        "label": "长按释放，消耗 20 层露水，<cultivation>10 秒内沧溟帝水经获得的修为变为 3 倍</cultivation>",
+        "label": "长按释放，消耗 20 层露水，使全部道具轮转进度快进 2 秒",
         "executors": [
           {
             "trigger": "onActiveSpellCast",
-            "type": "temporarySourceScriptureCultivationGainMultiplier",
-            "amount": 3,
-            "durationSec": 10
+            "type": "advanceRotationProgress",
+            "target": {
+              "type": "all"
+            },
+            "deltaMs": 2000
           },
           {
             "trigger": "onActiveSpellCast",
