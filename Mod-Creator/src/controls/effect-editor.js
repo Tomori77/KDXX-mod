@@ -2,6 +2,8 @@ import { zhCN } from "../i18n/zh-CN.js";
 import { createApiHint } from "./api-hint.js";
 import { createSelect } from "./select.js";
 import { createNumber } from "./number.js";
+import { createScriptureEditor } from "./scripture-editor.js";
+import { createStarOverridesEditor } from "./star-overrides-editor.js";
 import { effectKinds, passiveTypes, executorTypes, triggers } from "../generated/mechanism.js";
 
 export const effectNotes = zhCN.effectNotes;
@@ -48,6 +50,11 @@ const UI = {
   jsonInvalid: "JSON 解析失败，未写入。",
   conditionFallback: "条件编辑器尚未就绪，暂用下方 JSON 编辑激活条件。",
   unknownKind: "请选择效果类型（kind）。",
+  scriptureTitle: "功法层级（scriptureProgression）",
+  scriptureSchema: "items@3 · item-effects.schema.json#/$defs/T900",
+  starSummary: "星级覆写（starOverrides）",
+  starEmpty: "未设置星级覆写",
+  starSchema: "items@3 · item-effects.schema.json#/$defs/T625",
 };
 
 function clone(value) {
@@ -599,6 +606,52 @@ export function createEffectEditor(descriptor, value, onChange) {
     });
   }
 
+  function renderScriptureProgression(effect, index, container) {
+    const block = ensureObject(effect, "scriptureProgression");
+    if (!Array.isArray(block.layers)) {
+      block.layers = [];
+    }
+    container.appendChild(noteEl(UI.scriptureTitle, "warn"));
+    const editor = createScriptureEditor(
+      { path: rootPath + "[].scriptureProgression", schema: UI.scriptureSchema },
+      block,
+      (next) => {
+        if (next == null) {
+          delete effect.scriptureProgression;
+        } else {
+          effect.scriptureProgression = next;
+        }
+        commit();
+      }
+    );
+    container.appendChild(editor);
+  }
+
+  function renderStarOverrides(effect) {
+    const section = document.createElement("details");
+    section.className = "pc-effect-star";
+    const summary = document.createElement("summary");
+    summary.className = "pc-effect-star-summary";
+    const hasStar =
+      effect.starOverrides && typeof effect.starOverrides === "object" && !Array.isArray(effect.starOverrides);
+    summary.textContent = UI.starSummary + (hasStar ? "" : "（" + UI.starEmpty + "）");
+    section.appendChild(summary);
+    const editor = createStarOverridesEditor(
+      { path: rootPath + "[].starOverrides", schema: UI.starSchema },
+      hasStar ? effect.starOverrides : null,
+      (next) => {
+        if (next == null) {
+          delete effect.starOverrides;
+        } else {
+          effect.starOverrides = next;
+        }
+        commit();
+      }
+    );
+    section.appendChild(editor);
+    return section;
+  }
+
   function renderSubForm(effect, index, container) {
     if (isBlank(effect.kind)) {
       container.appendChild(noteEl(UI.unknownKind, "warn"));
@@ -612,6 +665,8 @@ export function createEffectEditor(descriptor, value, onChange) {
       renderPeriodicPulse(effect, index, container);
     } else if (effect.kind === "effectNote") {
       renderExecutors(effect, index, container);
+    } else if (effect.kind === "scriptureProgression") {
+      renderScriptureProgression(effect, index, container);
     } else if (Object.prototype.hasOwnProperty.call(SUB_BLOCKS, effect.kind)) {
       renderFallback(effect, index, container);
     } else {
@@ -658,6 +713,7 @@ export function createEffectEditor(descriptor, value, onChange) {
     sub.className = "pc-effect-sub";
     renderSubForm(effect, index, sub);
     card.appendChild(sub);
+    card.appendChild(renderStarOverrides(effect));
     return card;
   }
 

@@ -157,7 +157,6 @@ export function createEntry(partial = {}) {
 
 export function fields() {
   const schema = (pointer) => SCHEMA_FILE + (pointer ? "#" + pointer : "");
-  const effectSchema = (pointer) => EFFECTS_SCHEMA + (pointer ? "#" + pointer : "");
   return [
     {
       path: "mode",
@@ -311,10 +310,9 @@ export function fields() {
     },
     {
       path: "item.distribution",
-      control: "json",
+      control: "distribution-editor",
       label: "投放（distribution：channels/uniquePerSave）",
       required: false,
-      rows: 4,
       modes: ["add", "override"],
       schema: schema("/$defs/distribution")
     },
@@ -353,24 +351,6 @@ export function fields() {
       rows: 3,
       modes: ["add", "override"],
       schema: schema("/$defs/commonFields/properties/formationLockDurationSecByStar")
-    },
-    {
-      path: "item.effectList[].starOverrides",
-      control: "json",
-      label: "升星覆写（starOverrides，写在单条效果根级；结构权威见 item-effects.schema.json）",
-      required: false,
-      rows: 5,
-      modes: ["add"],
-      schema: effectSchema("/$defs/T625")
-    },
-    {
-      path: "item.effectList[].scriptureProgression",
-      control: "json",
-      label: "功法层级（scriptureProgression，只用于 effectList 根效果；结构权威见 item.schema.json#/$defs/scriptureProgression）",
-      required: false,
-      rows: 6,
-      modes: ["add"],
-      schema: schema("/$defs/scriptureProgression")
     },
     {
       path: "item.spell.sourceScriptureNumericId",
@@ -575,6 +555,78 @@ function validateEffectList(list, results) {
           );
         }
       });
+    }
+    if (effect.kind === "scriptureProgression") {
+      validateScriptureProgression(effect.scriptureProgression, path + ".scriptureProgression", results);
+    }
+  });
+}
+
+function validateScriptureProgression(progression, path, results) {
+  if (!isPlainObject(progression) || !Array.isArray(progression.layers)) {
+    results.push(
+      error(
+        "scriptureProgression.layers",
+        path + ".layers",
+        "scriptureProgression 必须提供 layers 数组"
+      )
+    );
+    return;
+  }
+  progression.layers.forEach((layer, index) => {
+    const layerPath = path + ".layers[" + index + "]";
+    const tag = "功法第 " + (index + 1) + " 层";
+    if (!isPlainObject(layer)) {
+      results.push(error("scriptureProgression.layer", layerPath, tag + "必须是对象"));
+      return;
+    }
+    if (layer.effects !== undefined && !isPlainObject(layer.effects)) {
+      results.push(error("scriptureProgression.effects", layerPath + ".effects", tag + "的 effects 必须是对象"));
+    } else if (isPlainObject(layer.effects) && !Array.isArray(layer.effects.effectList)) {
+      results.push(
+        error(
+          "scriptureProgression.effectList",
+          layerPath + ".effects.effectList",
+          tag + "的 effects.effectList 必须是数组（各层写累计值，运行时只保留当前层效果）"
+        )
+      );
+    }
+    const req = layer.requirements;
+    if (req !== undefined && req !== null && !isPlainObject(req)) {
+      results.push(error("scriptureProgression.requirements", layerPath + ".requirements", tag + "的 requirements 必须是对象"));
+    } else if (index === 0 && isPlainObject(req)) {
+      if (req.requiredRealmId != null || req.requiredRealmLayer != null || req.requiredCultivation != null) {
+        results.push(
+          warning(
+            "scriptureProgression.firstLayerRequirement",
+            layerPath + ".requirements",
+            tag + "是免费入门层，不应写境界/修为要求（《确认可行路径参考》〇）"
+          )
+        );
+      }
+    }
+    if (index >= 1) {
+      for (const key of ["breakthroughTargetProgress", "breakthroughTimeLimitSec"]) {
+        const value = layer[key];
+        if (typeof value !== "number" || !(value > 0)) {
+          results.push(
+            error(
+              "scriptureProgression.breakthrough",
+              layerPath + "." + key,
+              tag + "（第 2 层起）的 " + key + " 必须为正数（《确认可行路径参考》一）"
+            )
+          );
+        }
+      }
+    }
+    if (layer.breakthroughCooldownSec !== undefined && typeof layer.breakthroughCooldownSec !== "number") {
+      results.push(
+        error(
+          "scriptureProgression.breakthroughCooldownSec",
+          layerPath + ".breakthroughCooldownSec",
+          tag + "的 breakthroughCooldownSec 必须是数值"
+        )
+      );
     }
   });
 }

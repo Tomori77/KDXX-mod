@@ -11,6 +11,9 @@ import { createShapeGrid } from "./shape-grid.js";
 import { createEffectEditor } from "./effect-editor.js";
 import { createConditionEditor } from "./condition-editor.js";
 import { createAssetPicker } from "./asset-picker.js";
+import { createScriptureEditor } from "./scripture-editor.js";
+import { createStarOverridesEditor } from "./star-overrides-editor.js";
+import { createDistributionEditor } from "./distribution-editor.js";
 
 const factories = {
   select: createSelect,
@@ -24,6 +27,9 @@ const factories = {
   "effect-editor": createEffectEditor,
   "condition-editor": createConditionEditor,
   "asset-picker": createAssetPicker,
+  "scripture-editor": createScriptureEditor,
+  "star-overrides-editor": createStarOverridesEditor,
+  "distribution-editor": createDistributionEditor,
 };
 
 export function createField(descriptor, value, onChange, context) {

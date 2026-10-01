@@ -188,6 +188,9 @@ export const zhCN = {
     "effect-editor": "效果编辑器",
     "condition-editor": "条件编辑器",
     "asset-picker": "资源选择",
+    "scripture-editor": "功法层级编辑器",
+    "star-overrides-editor": "星级覆写编辑器",
+    "distribution-editor": "投放编辑器",
   },
   saveCompatibility: {
     enable: "启用存档兼容声明",
@@ -259,6 +262,53 @@ export const zhCN = {
       "主动招式中的 itemRuntimeStatus 必须显式写 amount（例如 9007199254740991）；缺省会被当作 0 而整条 executor 被丢弃、静默失效。",
     periodicPulseItemRuntimeStatus:
       "periodicPulse 内的敌方状态（加速/减速/冻结）必须写进 periodicPulse.itemRuntimeStatusEffects；executors[] 里的 itemRuntimeStatus 的 targetScope 只允许 self。",
+  },
+  scripture: {
+    layer: "第 {n} 层",
+    addLayer: "添加层级",
+    addRequirement: "添加前置功法要求",
+    requirements: "境界与修为要求（requirements）",
+    requiredRealmId: "所需境界（requiredRealmId）",
+    requiredRealmIdPlaceholder: "如 qiRefining / foundation",
+    requiredRealmLayer: "境界层数（requiredRealmLayer）",
+    requiredCultivation: "所需修为（requiredCultivation）",
+    requiredScriptureLayers: "前置功法层数（requiredScriptureLayers）",
+    templateNumericId: "前置功法编号（templateNumericId）",
+    minLayer: "最低层数（minLayer）",
+    breakthrough: "突破数值",
+    breakthroughTargetProgress: "突破目标进度（breakthroughTargetProgress）",
+    breakthroughTimeLimitSec: "突破时限秒数（breakthroughTimeLimitSec）",
+    breakthroughCooldownSec: "突破冷却秒数（breakthroughCooldownSec）",
+    effects: "本层效果（effects）",
+    labels: "层文案（effects.labels）",
+    effectList: "本层效果列表（effects.effectList）",
+    layerAuto: "层号由顺序自动生成（第 1 层为索引 0）。",
+    noteCumulative:
+      "① 每层效果必须写累计值：运行时只保留当前层 effects.effectList，不会叠加低层效果（《招式效果速查》7.5）。",
+    noteFirstLayer:
+      "② 第 1 层是免费入门层：不写境界/修为要求，也不授予任何招式（《确认可行路径参考》〇）。",
+    noteBreakthrough:
+      "③ 第 2 层起 breakthroughTargetProgress 与 breakthroughTimeLimitSec 必须为正数。",
+    invalid: "scriptureProgression.layers 必须是数组。",
+    invalidLayer: "层必须是对象。",
+    invalidRequirements: "requirements 必须是对象。",
+    invalidScriptureLayers: "requiredScriptureLayers 必须是数组。",
+    invalidScriptureLayerRow: "前置功法要求项缺少 templateNumericId/minLayer",
+    invalidEffects: "effects 必须是对象。",
+    invalidEffectList: "effects.effectList 必须是数组。",
+    invalidNumber: "数值字段非法：",
+  },
+  starOverrides: {
+    starLabel: "星级",
+    hint:
+      "只写变化的字段，数组字段整段替换；不要放进 passiveEffect 等内部对象（结构权威见 item-effects.schema.json#/$defs/T625）。",
+    arrayHint: "未勾选的星级不会写入 starOverrides；三项都为空则不生成该键。",
+  },
+  distribution: {
+    channels: "投放渠道（channels）",
+    uniquePerSave: "每存档唯一（uniquePerSave）",
+    hint:
+      "channels 可选 bazaar（坊市）或 scriptureSpellReward（功法招式奖励）；两项都不选且不勾选唯一时不生成 distribution。",
   },
 };
 
