@@ -4,10 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>口袋修仙 Mod 制作器</title>
+  <script>
+    (function () {
+      function showFileHint() {
+        var root = document.getElementById("app");
+        if (!root) {
+          return;
+        }
+        root.innerHTML =
+          '<div style="max-width:720px;margin:48px auto;padding:24px 28px;background:#1a1712;color:#e8e0cf;border:1px solid #c9a24a;border-radius:8px;font-family:\'Microsoft YaHei\',\'PingFang SC\',system-ui;line-height:1.8">' +
+          '<h2 style="margin-top:0;color:#c9a24a;font-family:KaiTi,\'STKaiti\',serif">请通过本地服务器打开</h2>' +
+          '<p>浏览器禁止以 <code>file://</code> 协议直接加载 ES Module，因此双击 index.html 无法启动本工具。</p>' +
+          '<p>请使用项目自带的启动脚本，或任意静态服务器打开：</p>' +
+          '<ol>' +
+          '<li>双击项目根目录的 <b>启动.bat</b>（自动选端口并打开浏览器）</li>' +
+          '<li>或运行 <b>tools/serve.ps1</b>：<br><code>pwsh -File tools/serve.ps1</code></li>' +
+          '<li>或手动启动静态服务器：<br><code>python -m http.server 8765</code></li>' +
+          '</ol>' +
+          '<p>然后访问：<a style="color:#c9a24a" href="http://127.0.0.1:8765/index.html">http://127.0.0.1:8765/index.html</a></p>' +
+          '<p style="color:#9a8f78;font-size:13px;margin-bottom:0">原因：ES Module 受同源/CORS 限制，file:// 下无法跨文件加载模块。</p>' +
+          '</div>';
+      }
+
+      if (location.protocol === "file:") {
+        document.addEventListener("DOMContentLoaded", showFileHint);
+      } else {
+        var module = document.createElement("script");
+        module.type = "module";
+        module.src = "src/app/main.js";
+        document.addEventListener("DOMContentLoaded", function () {
+          document.body.appendChild(module);
+        });
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="src/ui/theme.css">
 </head>
 <body>
   <div id="app"></div>
-  <script type="module" src="src/app/main.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
 
 ## 特性
 
-- **纯前端 / 零构建**：原生 HTML/CSS/ES Module，无后端、无打包器、无框架；可直接双击 `index.html` 或经静态服务器打开。
+- **纯前端 / 零构建**：原生 HTML/CSS/ES Module，无后端、无打包器、无框架；经本地服务器打开（见下方运行方式）。
 - **全中文界面 + 接口标注**：每个字段旁显示其 JSON 路径与来源 schema，帮助理解「这个选项对应哪个接口」。
 - **接口驱动的控件**：下拉栏、多选、开关、数值范围、`shape` 网格、效果编辑器等均按 SDK schema 约束生成，从源头避免非法包。
 - **完整 Mod 工作流**：从 `manifest` 到各域内容，一键导出规范 `.zip`（可解压进游戏 `mods/<mod-id>/`），也可导入已有包继续编辑。
@@ -13,26 +13,31 @@
 
 ## 环境与运行
 
-无需安装依赖。
+需要 Python 3（仅用于起本地静态服务器，工具本身无依赖）。
 
 ```powershell
-# 方式一：任意静态服务器（推荐）
-python -m http.server 8080
-# 然后浏览器打开 http://127.0.0.1:8080/Mod-Creator/
+# 方式一：双击 启动.bat（自动选端口并打开浏览器）
 
-# 方式二：直接双击 index.html（file:// 打开）
+# 方式二：PowerShell
+pwsh -File tools/serve.ps1
+
+# 方式三：手动
+python -m http.server 8765
+# 然后浏览器打开 http://127.0.0.1:8765/index.html
 ```
 
+> **不要直接双击 `index.html`**（`file://`）。Chrome/Edge 禁止在 `file://` 下加载 ES Module，会白/黑屏；直接双击时页面会显示中文引导，请改用上述任一方式。
 > 仅支持现代 Chromium / Edge 桌面浏览器。所有数据默认只保存在本机浏览器，不上传。
 
 ## 使用指南
 
 ### 打开方式
 
-- **静态服务器（推荐）**：在仓库根目录执行 `python -m http.server 8080`，浏览器打开 `http://127.0.0.1:8080/Mod-Creator/`。
-- **直接打开**：双击 `Mod-Creator/index.html`（`file://` 方式）也可运行，无需安装任何依赖。
+- **双击 `启动.bat`（推荐）**：自动选择空闲端口、启动本地服务器并打开浏览器。
+- **PowerShell**：`pwsh -File tools/serve.ps1`（可加 `-Port 8765`、`-NoBrowser`）。
+- **手动**：`python -m http.server 8765`，浏览器打开 `http://127.0.0.1:8765/index.html`。
 
-两种方式能力一致：本地大词典已编译为 ES module，运行时不发 `fetch` 读取本地 JSON。
+三种方式能力一致：本地大词典已编译为 ES module，运行时不发 `fetch` 读取本地 JSON。**不支持 `file://` 直接双击打开**（浏览器禁止 ES Module，见运行方式说明）。
 
 ### 创建第一个 Mod
 
