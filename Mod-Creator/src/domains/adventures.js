@@ -70,6 +70,26 @@ function collectEntries(project, domain) {
   return [];
 }
 
+function collectMaps(project) {
+  if (project && isPlainObject(project.content) && Array.isArray(project.content.maps)) {
+    return project.content.maps;
+  }
+  return [];
+}
+
+function findMapById(maps, mapId) {
+  return maps.find((map) => isPlainObject(map) && map.mapId === mapId) || null;
+}
+
+function hasUndirectedEdge(edges, from, to) {
+  if (!Array.isArray(edges)) {
+    return false;
+  }
+  return edges.some(
+    (edge) => isPlainObject(edge) && ((edge.from === from && edge.to === to) || (edge.from === to && edge.to === from))
+  );
+}
+
 function schema(pointer) {
   return SCHEMA_FILE + (pointer || "");
 }
@@ -712,6 +732,66 @@ function validateNpc(npc, mapId, ctx, results) {
   validateEncounterRef(npc.killEncounterId, path + ".killEncounterId", mapId, ctx, results);
 }
 
+function validateRouteNodeIds(entry, path, maps, results) {
+  const npc = entry.npc;
+  if (!isPlainObject(npc) || !Array.isArray(npc.routeNodeIds) || npc.routeNodeIds.length === 0) {
+    return;
+  }
+  const mapId = entry.mapId;
+  if (isBlank(mapId) || typeof mapId !== "string") {
+    return;
+  }
+  const routePath = path + ".npc.routeNodeIds";
+  const map = findMapById(maps, mapId);
+  if (OFFICIAL_MAP_RE.test(mapId) || !map) {
+    results.push(
+      warning(
+        "adventure.routeNodeIds.unknownMap",
+        routePath,
+        "地图 " + mapId + " 不在本包中（跨包/官方地图无法静态校验巡逻路线）"
+      )
+    );
+    return;
+  }
+  const nodes = Array.isArray(map.nodes) ? map.nodes : [];
+  const nodeIds = new Set();
+  nodes.forEach((node) => {
+    if (isPlainObject(node) && typeof node.id === "string" && node.id !== "") {
+      nodeIds.add(node.id);
+    }
+  });
+  npc.routeNodeIds.forEach((nodeId, index) => {
+    if (typeof nodeId === "string" && nodeId !== "" && !nodeIds.has(nodeId)) {
+      results.push(
+        error(
+          "adventure.routeNodeIds.nodeMissing",
+          routePath + "[" + index + "]",
+          "巡逻节点不存在于地图 " + mapId + "：" + nodeId
+        )
+      );
+    }
+  });
+  for (let index = 0; index + 1 < npc.routeNodeIds.length; index += 1) {
+    const from = npc.routeNodeIds[index];
+    const to = npc.routeNodeIds[index + 1];
+    if (typeof from !== "string" || typeof to !== "string") {
+      continue;
+    }
+    if (!nodeIds.has(from) || !nodeIds.has(to)) {
+      continue;
+    }
+    if (!hasUndirectedEdge(map.edges, from, to)) {
+      results.push(
+        error(
+          "adventure.routeNodeIds.noEdge",
+          routePath + "[" + index + "]",
+          "巡逻路线相邻节点必须有连线（" + from + " → " + to + "）"
+        )
+      );
+    }
+  }
+}
+
 function validateInteraction(entry, ctx, results) {
   validateFlowIdValue(entry, results);
   if (isBlank(entry.flowId)) {
@@ -808,6 +888,7 @@ export function validateProject(project, domain = "adventures") {
           warning("maps.notDeclared", path + ".mapId", "投放到自制地图 " + entry.mapId + " 需在 manifest.domains 声明 maps 域")
         );
       }
+      validateRouteNodeIds(entry, path, collectMaps(project), results);
     }
   });
 

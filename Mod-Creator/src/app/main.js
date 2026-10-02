@@ -317,6 +317,7 @@ export function bootstrap() {
     renderedMode: undefined,
     selectedRoute: undefined,
     selectedIndex: null,
+    activeIndex: null,
     pendingFocusIndex: null,
     validationEl: null,
     validationTarget: null,
@@ -531,6 +532,7 @@ export function bootstrap() {
   function selectRow(domain, list, index) {
     state.selectedRoute = domain;
     state.selectedIndex = index;
+    state.activeIndex = index;
     syncSelectedId(domain, list, index);
     render();
   }
@@ -546,6 +548,7 @@ export function bootstrap() {
     dispatch(removeEntry(domain, idOf(selected, domain)));
     const nextList = domainEntries(domain);
     state.selectedIndex = nextList.length === 0 ? null : Math.min(index, nextList.length - 1);
+    state.activeIndex = state.selectedIndex;
     syncSelectedId(domain, nextList, state.selectedIndex);
     state.pendingFocusIndex = state.selectedIndex;
     render();
@@ -562,6 +565,21 @@ export function bootstrap() {
       state.selectedIndex = list.length > 0 ? list.length - 1 : null;
     }
     return state.selectedIndex;
+  }
+
+  function resolveActiveIndex(route, list) {
+    if (list.length === 0) {
+      state.activeIndex = null;
+      return null;
+    }
+    if (state.selectedRoute === route && state.selectedIndex != null && state.selectedIndex < list.length) {
+      state.activeIndex = state.selectedIndex;
+      return state.activeIndex;
+    }
+    if (state.activeIndex == null || state.activeIndex >= list.length) {
+      state.activeIndex = 0;
+    }
+    return state.activeIndex;
   }
 
   function refreshValidation() {
@@ -651,6 +669,8 @@ export function bootstrap() {
       dispatch(addEntry(domain, entry));
       state.selectedRoute = domain;
       state.selectedIndex = domainEntries(domain).length - 1;
+      state.activeIndex = state.selectedIndex;
+      state.pendingFocusIndex = state.selectedIndex;
       syncSelectedId(domain, domainEntries(domain), state.selectedIndex);
       render();
     });
@@ -676,12 +696,15 @@ export function bootstrap() {
       const ul = createEl("ul", "pc-domain-list");
       ul.setAttribute("role", "listbox");
       ul.setAttribute("aria-label", zhCN.listboxLabel);
+      const activeIndex = resolveActiveIndex(domain, list);
       list.forEach((entry, rowIndex) => {
         const li = createEl("li", "pc-entry-item");
         li.setAttribute("role", "option");
-        li.tabIndex = 0;
         const isSelected = rowIndex === index;
+        const isActive = rowIndex === activeIndex;
+        li.tabIndex = isActive ? 0 : -1;
         li.classList.toggle("selected", isSelected);
+        li.classList.toggle("is-focus", isActive);
         li.setAttribute("aria-selected", isSelected ? "true" : "false");
         const label = createEl("span", "pc-entry-label", module.summarize(entry));
         li.appendChild(label);
@@ -702,6 +725,19 @@ export function bootstrap() {
             event.preventDefault();
             const delta = event.key === "ArrowDown" ? 1 : -1;
             const next = Math.max(0, Math.min(list.length - 1, rowIndex + delta));
+            if (next === state.activeIndex) {
+              return;
+            }
+            const rows = state.listRows;
+            if (next !== rowIndex && rows[rowIndex]) {
+              rows[rowIndex].li.tabIndex = -1;
+              rows[rowIndex].li.classList.remove("is-focus");
+            }
+            if (rows[next]) {
+              rows[next].li.tabIndex = 0;
+              rows[next].li.classList.add("is-focus");
+            }
+            state.activeIndex = next;
             state.pendingFocusIndex = next;
             selectRow(domain, list, next);
             return;

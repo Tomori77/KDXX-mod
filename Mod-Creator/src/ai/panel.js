@@ -356,9 +356,46 @@ export function openAiPanel(mode = "advice", deps = {}) {
     }
   });
 
+  function focusableElements() {
+    const selector =
+      'a[href], button, input, textarea, select, summary, [tabindex]:not([tabindex="-1"])';
+    const nodes = panel.querySelectorAll(selector);
+    return Array.prototype.filter.call(nodes, (node) => {
+      if (node.disabled || node.hidden) {
+        return false;
+      }
+      const ariaHidden = typeof node.getAttribute === "function" ? node.getAttribute("aria-hidden") : null;
+      return ariaHidden !== "true";
+    });
+  }
+
   function onKeyDown(event) {
     if (event.key === "Escape") {
+      event.preventDefault();
       close();
+      return;
+    }
+    if (event.key !== "Tab") {
+      return;
+    }
+    const items = focusableElements();
+    if (items.length === 0) {
+      event.preventDefault();
+      if (typeof panel.focus === "function") {
+        panel.focus();
+      }
+      return;
+    }
+    const active = document.activeElement;
+    const current = Array.prototype.indexOf.call(items, active);
+    if (event.shiftKey) {
+      if (current <= 0) {
+        event.preventDefault();
+        items[items.length - 1].focus();
+      }
+    } else if (current === -1 || current === items.length - 1) {
+      event.preventDefault();
+      items[0].focus();
     }
   }
   document.addEventListener("keydown", onKeyDown);

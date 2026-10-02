@@ -1341,9 +1341,19 @@ textarea.pc-json {
 .pc-entry-item:focus,
 .pc-entry-item.is-focus {
   border-color: var(--jin-hi);
+  border-left-width: 3px;
+  border-left-color: var(--jin-hi);
   background: var(--mo3);
   color: var(--jin-hi);
   box-shadow: inset 0 0 0 1px var(--jin-hi);
+}
+
+.pc-entry-item.is-focus:not(.selected) {
+  background: var(--mo2);
+}
+
+.pc-entry-item.selected.is-focus {
+  background: var(--mo3);
 }
 
 .pc-entry-item.selected::before {
