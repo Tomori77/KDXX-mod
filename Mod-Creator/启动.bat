@@ -43,7 +43,7 @@ echo.
 start "" /b powershell -NoProfile -Command "Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:%PORT%/index.html'"
 
 cd /d "%ROOT%"
-%PY% -m http.server %PORT% --bind 127.0.0.1
+%PY% "%ROOT%tools\server.py" --port %PORT% --root "%ROOT%"
 echo.
 echo 服务器已停止。
 pause

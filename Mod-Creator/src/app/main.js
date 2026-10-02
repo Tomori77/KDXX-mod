@@ -24,6 +24,8 @@ import {
 import { assessExport } from "../save/impact.js";
 import { warnImpact, summarizeForExport } from "../save/notify.js";
 import { openAiPanel } from "../ai/panel.js";
+import * as localService from "../io/local-service.js";
+import { initFolderFlow } from "./folder-flow.js";
 
 function createEl(tag, className, text) {
   const node = document.createElement(tag);
@@ -218,6 +220,21 @@ function fieldsFor(module, entry) {
     return all;
   }
   return all.filter((descriptor) => !Array.isArray(descriptor.modes) || descriptor.modes.includes(mode));
+}
+
+function showToast(message) {
+  if (typeof document === "undefined" || !message) {
+    return;
+  }
+  const existing = document.querySelector(".mc-toast");
+  if (existing) {
+    existing.remove();
+  }
+  const toast = createEl("div", "toast mc-toast", String(message));
+  toast.setAttribute("role", "status");
+  toast.setAttribute("aria-live", "polite");
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
 }
 
 function downloadText(text, filename, mime) {
@@ -467,6 +484,46 @@ export function bootstrap() {
   const aiDiffBtn = createEl("button", "pillbtn pc-toolbar-btn", zhCN.aiDiff);
   aiDiffBtn.addEventListener("click", () => openModalPanel("diff"));
 
+  const folderFlow = initFolderFlow({
+    getProject: () => getState(),
+    applyProject: (project) => reset(project),
+    refreshUi: () => render(),
+    notify: (message) => showToast(message),
+    confirm: (message) => window.confirm(message),
+    prompt: (message, value) => window.prompt(message, value),
+    service: localService
+  });
+
+  const importFolderBtn = createEl("button", "pillbtn pc-toolbar-btn pc-folder-import", zhCN.importFolder);
+  importFolderBtn.addEventListener("click", () => folderFlow.importWorkingCopy());
+
+  const saveWorkingCopyBtn = createEl("button", "pillbtn pc-toolbar-btn pc-folder-save", zhCN.saveWorkingCopy);
+  saveWorkingCopyBtn.addEventListener("click", () => folderFlow.saveWorkingCopy());
+
+  const mergeGuideBtn = createEl("button", "pillbtn pc-toolbar-btn pc-folder-merge", zhCN.mergeGuide);
+  mergeGuideBtn.addEventListener("click", () => folderFlow.openMergeGuide());
+
+  const publishWorkshopBtn = createEl("button", "pillbtn pc-toolbar-btn pc-folder-publish", zhCN.publishWorkshop);
+  publishWorkshopBtn.addEventListener("click", () => folderFlow.publishToWorkshop());
+
+  const folderButtons = [importFolderBtn, saveWorkingCopyBtn, mergeGuideBtn, publishWorkshopBtn];
+  localService
+    .isAvailable()
+    .then((available) => {
+      if (!available) {
+        for (const button of folderButtons) {
+          button.disabled = true;
+          button.title = zhCN.serviceUnavailableHint;
+        }
+      }
+    })
+    .catch(() => {
+      for (const button of folderButtons) {
+        button.disabled = true;
+        button.title = zhCN.serviceUnavailableHint;
+      }
+    });
+
   const newProjectBtn = createEl("button", "pillbtn pc-toolbar-btn pc-project-new", zhCN.newProject);
   newProjectBtn.addEventListener("click", handleNewProject);
 
@@ -492,6 +549,10 @@ export function bootstrap() {
   toolbar.appendChild(importProjectBtn);
   toolbar.appendChild(exportProjectBtn);
   toolbar.appendChild(importDomainBtn);
+  toolbar.appendChild(importFolderBtn);
+  toolbar.appendChild(saveWorkingCopyBtn);
+  toolbar.appendChild(mergeGuideBtn);
+  toolbar.appendChild(publishWorkshopBtn);
   toolbar.appendChild(aiAdviceBtn);
   toolbar.appendChild(aiDiffBtn);
   toolbar.appendChild(importModInput);

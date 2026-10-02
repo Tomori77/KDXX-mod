@@ -10,6 +10,13 @@
 # 第三方单文件库（按需在 docs/DECISIONS.md 登记后决定是否提交）
 /vendor/
 
+# edit 工作副本（用户导入的工程/Mod 在此修改，本地数据）
+/edit/
+
+# Python 运行产物
+__pycache__/
+*.pyc
+
 # 运行/调试产物
 *.log
 *.tmp

@@ -5,6 +5,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
+$server = Join-Path $PSScriptRoot 'server.py'
 
 $py = $null
 if (Get-Command py -ErrorAction SilentlyContinue) {
@@ -20,6 +21,11 @@ if (-not $py) {
   exit 1
 }
 
+if (-not (Test-Path -LiteralPath $server)) {
+  Write-Host "[错误] 未找到服务脚本: $server" -ForegroundColor Red
+  exit 1
+}
+
 $url = "http://127.0.0.1:$Port/index.html"
 Write-Host '============================================================'
 Write-Host '  口袋修仙 Mod 制作器 - 本地服务器 (PowerShell)'
@@ -31,17 +37,10 @@ Write-Host ''
 Write-Host '  按 Ctrl+C 停止服务器。'
 Write-Host '============================================================'
 
-if (-not $NoBrowser) {
-  Start-Job -ScriptBlock {
-    param($u)
-    Start-Sleep -Seconds 2
-    Start-Process $u
-  } -ArgumentList $url | Out-Null
-}
-
 Set-Location -LiteralPath $root
 $exe = $py[0]
 $args = @()
 if ($py.Count -gt 1) { $args += $py[1] }
-$args += @('-m', 'http.server', "$Port", '--bind', '127.0.0.1')
+$args += @($server, '--port', "$Port", '--root', $root)
+if ($NoBrowser) { $args += '--no-browser' }
 & $exe @args
