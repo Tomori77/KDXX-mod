@@ -1,5 +1,102 @@
-const FORMAT = "modcreator-project";
-const FORMAT_VERSION = 1;
+export const PROJECT_FORMAT = "modcreator-project";
+export const PROJECT_FORMAT_VERSION = 1;
+
+function issue(severity, code, path, messageZh) {
+  return { code, path, messageZh, severity };
+}
+
+function isPlainObject(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+export function parseProjectFile(text) {
+  const warnings = [];
+  const errors = [];
+  const result = {
+    ok: false,
+    format: null,
+    version: null,
+    project: null,
+    warnings,
+    errors
+  };
+
+  if (typeof text !== "string") {
+    errors.push(issue("error", "project.type", "", "工程文件内容必须是 JSON 字符串"));
+    return result;
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (err) {
+    errors.push(
+      issue("error", "project.json.invalid", "", "工程 JSON 解析失败：" + (err && err.message ? err.message : err))
+    );
+    return result;
+  }
+
+  if (!isPlainObject(parsed)) {
+    errors.push(issue("error", "project.type", "", "工程 JSON 顶层必须是对象"));
+    return result;
+  }
+
+  const hasFormat = Object.prototype.hasOwnProperty.call(parsed, "format");
+  const hasVersion = Object.prototype.hasOwnProperty.call(parsed, "version");
+  const format = hasFormat ? parsed.format : null;
+  const version = hasVersion && typeof parsed.version === "number" ? parsed.version : null;
+  result.format = format;
+  result.version = version;
+
+  if (hasFormat && format !== PROJECT_FORMAT) {
+    errors.push(issue("error", "project.format.unknown", "format", "未知的工程格式：" + String(format)));
+  }
+
+  if (version !== null) {
+    if (version > PROJECT_FORMAT_VERSION) {
+      errors.push(
+        issue(
+          "error",
+          "project.version.future",
+          "version",
+          "该工程由更新版本的 Mod-Creator 生成（formatVersion " + version + " > " + PROJECT_FORMAT_VERSION + "）"
+        )
+      );
+    } else if (version < PROJECT_FORMAT_VERSION) {
+      warnings.push(
+        issue(
+          "warning",
+          "project.version.outdated",
+          "version",
+          "工程为较旧版本（formatVersion " + version + "），载入时按当前格式处理"
+        )
+      );
+    }
+  }
+
+  let project = null;
+  if (isPlainObject(parsed.project)) {
+    project = parsed.project;
+  } else if (
+    !hasFormat &&
+    (Object.prototype.hasOwnProperty.call(parsed, "meta") ||
+      Object.prototype.hasOwnProperty.call(parsed, "content"))
+  ) {
+    project = parsed;
+    warnings.push(issue("warning", "project.legacy", "", "旧版/裸工程格式，已按当前格式载入"));
+  }
+
+  if (project === null) {
+    errors.push(
+      issue("error", "project.unrecognized", "", "无法识别的工程文件：既无有效 format 字段，也不含 meta/content")
+    );
+    return result;
+  }
+
+  result.project = project;
+  result.ok = errors.length === 0;
+  return result;
+}
 
 function isBlob(value) {
   return (
@@ -183,21 +280,16 @@ export async function serializeProject(project) {
   };
   delete payload.history;
 
-  return JSON.stringify({ format: FORMAT, version: FORMAT_VERSION, project: payload }, null, 2);
+  return JSON.stringify({ format: PROJECT_FORMAT, version: PROJECT_FORMAT_VERSION, project: payload }, null, 2);
 }
 
 export async function deserializeProject(text) {
-  if (typeof text !== "string") {
-    throw new Error("deserializeProject: 需要 JSON 字符串");
+  const result = parseProjectFile(text);
+  if (!result.ok) {
+    const first = result.errors[0];
+    throw new Error("工程文件无法载入：" + (first && first.messageZh ? first.messageZh : "未知错误"));
   }
-  const parsed = JSON.parse(text);
-  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
-    throw new Error("deserializeProject: 工程 JSON 顶层必须是对象");
-  }
-  let project = parsed;
-  if (parsed.format === FORMAT && parsed.project && typeof parsed.project === "object") {
-    project = parsed.project;
-  }
+  const project = result.project;
 
   const content = project.content && typeof project.content === "object" ? project.content : {};
   const assets = content.assets && typeof content.assets === "object" ? content.assets : { icons: {} };

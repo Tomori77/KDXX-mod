@@ -13,6 +13,10 @@ const CONTENT_DOMAINS = [
   "scripts"
 ];
 
+export const MOD_PACKAGE_FORMAT = "mod-package";
+export const DOMAIN_JSON_FORMAT = "domain-json";
+export const FORMAT_VERSION = 1;
+
 const textDecoder = new TextDecoder("utf-8");
 const textEncoder = new TextEncoder();
 
@@ -29,6 +33,10 @@ const MIME_BY_EXT = {
 
 function warning(code, path, messageZh) {
   return { code, path, messageZh, severity: "warning" };
+}
+
+function error(code, path, messageZh) {
+  return { code, path, messageZh, severity: "error" };
 }
 
 function isPlainObject(value) {
@@ -124,6 +132,7 @@ function baseNameOf(path) {
 export function importFiles(fileMap) {
   const entries = normalizeFileMap(fileMap);
   const warnings = [];
+  const errors = [];
   const prefix = findPrefix(entries);
   const prefixSlash = prefix ? prefix + "/" : "";
 
@@ -143,7 +152,7 @@ export function importFiles(fileMap) {
       try {
         manifest = JSON.parse(toText(entry.content));
       } catch {
-        warnings.push(warning("import.manifest.invalid", entry.path, "manifest.json 不是合法 JSON，已忽略"));
+        errors.push(error("package.manifest.invalid", entry.path, "manifest.json 不是合法 JSON"));
         manifest = null;
       }
       continue;
@@ -189,14 +198,24 @@ export function importFiles(fileMap) {
   }
 
   if (!manifestFound) {
-    warnings.push(warning("import.manifest.missing", "manifest.json", "包内未找到 manifest.json"));
-  } else if (isPlainObject(manifest)) {
+    errors.push(error("package.manifest.missing", "manifest.json", "包内未找到 manifest.json"));
+  } else if (manifest !== null && isPlainObject(manifest)) {
     const issues = domainModules.manifest.validateEntry(manifest);
     for (const issue of issues) {
-      warnings.push(warning("import." + issue.code, issue.path || "manifest", issue.messageZh));
+      const mapped = {
+        code: "import." + issue.code,
+        path: issue.path || "manifest",
+        messageZh: issue.messageZh,
+        severity: issue.severity === "error" ? "error" : "warning"
+      };
+      if (mapped.severity === "error") {
+        errors.push(mapped);
+      } else {
+        warnings.push(mapped);
+      }
     }
   } else if (manifest !== null) {
-    warnings.push(warning("import.manifest.type", "manifest.json", "manifest.json 顶层必须是对象"));
+    errors.push(error("package.manifest.type", "manifest.json", "manifest.json 顶层必须是对象"));
   }
 
   const content = {
@@ -221,7 +240,7 @@ export function importFiles(fileMap) {
     content[domain] = Array.isArray(parsed) ? parsed : parsed == null ? [] : [parsed];
   }
 
-  return { manifest, content, warnings };
+  return { format: MOD_PACKAGE_FORMAT, formatVersion: FORMAT_VERSION, manifest, content, warnings, errors };
 }
 
 async function fileToBytes(file) {
@@ -254,10 +273,77 @@ export async function importArchive(file) {
 }
 
 export async function importDomainJson(file, domain) {
+  const warnings = [];
+  const errors = [];
+  const result = {
+    format: DOMAIN_JSON_FORMAT,
+    formatVersion: FORMAT_VERSION,
+    domain: domain,
+    total: 0,
+    entries: [],
+    warnings,
+    errors
+  };
+
   if (!CONTENT_DOMAINS.includes(domain)) {
-    throw new Error("importDomainJson: 未知的域 " + domain);
+    errors.push(error("domain.unknown", "domain", "未知的域：" + String(domain)));
+    return result;
   }
+
+  const module = domainModules[domain];
   const text = typeof file === "string" ? file : toText(await fileToBytes(file));
-  const parsed = JSON.parse(text);
-  return Array.isArray(parsed) ? parsed[0] : parsed;
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (err) {
+    errors.push(error("domain.json.invalid", "", "JSON 解析失败：" + (err && err.message ? err.message : err)));
+    return result;
+  }
+
+  let list;
+  if (Array.isArray(parsed)) {
+    list = parsed;
+  } else if (isPlainObject(parsed)) {
+    list = [parsed];
+  } else {
+    errors.push(error("domain.empty", "", "域 JSON 必须是条目对象或条目数组"));
+    return result;
+  }
+
+  if (list.length === 0) {
+    errors.push(error("domain.empty", "", "域 JSON 不含任何条目"));
+    return result;
+  }
+
+  result.total = list.length;
+
+  for (let i = 0; i < list.length; i++) {
+    const entry = list[i];
+    const path = list.length > 1 ? "[" + i + "]." + domain : domain;
+    if (!isPlainObject(entry)) {
+      errors.push(error("domain.empty", path, "条目必须是对象"));
+      continue;
+    }
+    const issues = module && typeof module.validateEntry === "function" ? module.validateEntry(entry) : [];
+    let hasError = false;
+    for (const issue of issues) {
+      const mapped = {
+        code: issue.code,
+        path: issue.path ? path + "." + issue.path : path,
+        messageZh: issue.messageZh,
+        severity: issue.severity === "error" ? "error" : "warning"
+      };
+      if (mapped.severity === "error") {
+        errors.push(mapped);
+        hasError = true;
+      } else {
+        warnings.push(mapped);
+      }
+    }
+    if (!hasError) {
+      result.entries.push(entry);
+    }
+  }
+
+  return result;
 }

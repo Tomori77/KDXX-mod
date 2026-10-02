@@ -8,7 +8,7 @@ import { domainList, domainModules } from "../domains/index.js";
 import { createField } from "../controls/field.js";
 import { downloadPackage } from "../io/export-mod.js";
 import { importArchive, importDomainJson } from "../io/import-mod.js";
-import { serializeProject, deserializeProject, projectFileName } from "../io/project-file.js";
+import { serializeProject, deserializeProject, parseProjectFile, projectFileName } from "../io/project-file.js";
 import {
   listProjects,
   listSnapshots,
@@ -274,6 +274,38 @@ function importStateFrom(result) {
     ui: { activeDomain: "manifest", selectedId: null, dirty: true, warnings: [] }
   };
   reset(next);
+}
+
+function importDetailLines(items) {
+  return items
+    .slice(0, 3)
+    .filter((item) => item && item.messageZh)
+    .map((item) => "· " + item.messageZh)
+    .join("\n");
+}
+
+function importReport(base, errors, warnings) {
+  const lines = [];
+  if (base) {
+    lines.push(base);
+  }
+  const errorList = Array.isArray(errors) ? errors : [];
+  const warningList = Array.isArray(warnings) ? warnings : [];
+  if (errorList.length > 0) {
+    lines.push(zhCN.importErrors + "：" + errorList.length);
+    const detail = importDetailLines(errorList);
+    if (detail) {
+      lines.push(detail);
+    }
+  }
+  if (warningList.length > 0) {
+    lines.push(zhCN.importWarnings + "：" + warningList.length);
+    const detail = importDetailLines(warningList);
+    if (detail) {
+      lines.push(detail);
+    }
+  }
+  return lines.join("\n");
 }
 
 function currentProjectId() {
@@ -1065,11 +1097,15 @@ export function bootstrap() {
     await snapshotSafely();
     try {
       const result = await importArchive(file);
+      const errors = Array.isArray(result.errors) ? result.errors : [];
       const warnings = Array.isArray(result.warnings) ? result.warnings : [];
+      if (errors.length > 0) {
+        window.alert(importReport(zhCN.importFailed, errors, []));
+        return;
+      }
       importStateFrom(result);
       importModInput.value = "";
-      const base = zhCN.importSuccess;
-      window.alert(warnings.length > 0 ? base + "；" + zhCN.importWarnings + "：" + warnings.length : base);
+      window.alert(importReport(zhCN.importSuccess, [], warnings));
     } catch (error) {
       window.alert(zhCN.importFailed + "：" + (error && error.message ? error.message : String(error)));
     }
@@ -1086,11 +1122,24 @@ export function bootstrap() {
     }
     await snapshotSafely();
     try {
-      const entry = await importDomainJson(file, domain);
-      if (entry && typeof entry === "object" && !Array.isArray(entry)) {
+      const result = await importDomainJson(file, domain);
+      const entries = Array.isArray(result.entries) ? result.entries : [];
+      const errors = Array.isArray(result.errors) ? result.errors : [];
+      const warnings = Array.isArray(result.warnings) ? result.warnings : [];
+      const total = typeof result.total === "number" ? result.total : entries.length;
+      if (entries.length === 0) {
+        window.alert(importReport(zhCN.importFailed, errors, warnings));
+        return;
+      }
+      for (const entry of entries) {
         dispatch(addEntry(domain, entry));
       }
-      window.alert(zhCN.importSuccess);
+      let base = zhCN.importSuccess + "；" + zhCN.importEntries.replace("{n}", String(entries.length));
+      const skipped = total - entries.length;
+      if (skipped > 0) {
+        base += "；" + zhCN.importSkipped + "：" + skipped;
+      }
+      window.alert(importReport(base, [], warnings));
     } catch (error) {
       window.alert(zhCN.importFailed + "：" + (error && error.message ? error.message : String(error)));
     }
@@ -1136,8 +1185,9 @@ export function bootstrap() {
     try {
       const text = await readTextFile(file);
       const project = await deserializeProject(text);
+      const report = parseProjectFile(text);
       importStateFrom({ manifest: project.meta ? project.meta.manifest : {}, content: project.content });
-      window.alert(zhCN.importSuccess);
+      window.alert(importReport(zhCN.importSuccess, [], report.warnings));
     } catch (error) {
       window.alert(zhCN.importFailed + "：" + (error && error.message ? error.message : String(error)));
     }
