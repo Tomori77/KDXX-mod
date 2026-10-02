@@ -63,11 +63,19 @@ function toBytes(content) {
   return new Uint8Array(0);
 }
 
+function stripBom(text) {
+  return text.charCodeAt(0) === 0xfeff ? text.slice(1) : text;
+}
+
+function parseJsonText(text) {
+  return JSON.parse(stripBom(text));
+}
+
 function toText(content) {
   if (typeof content === "string") {
-    return content;
+    return stripBom(content);
   }
-  return textDecoder.decode(toBytes(content));
+  return stripBom(textDecoder.decode(toBytes(content)));
 }
 
 function base64Encode(bytes) {
@@ -291,10 +299,10 @@ export async function importDomainJson(file, domain) {
   }
 
   const module = domainModules[domain];
-  const text = typeof file === "string" ? file : toText(await fileToBytes(file));
+  const text = stripBom(typeof file === "string" ? file : toText(await fileToBytes(file)));
   let parsed;
   try {
-    parsed = JSON.parse(text);
+    parsed = parseJsonText(text);
   } catch (err) {
     errors.push(error("domain.json.invalid", "", "JSON 解析失败：" + (err && err.message ? err.message : err)));
     return result;

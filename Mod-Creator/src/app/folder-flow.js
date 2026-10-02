@@ -320,7 +320,8 @@ async function loadWorkingCopy(ctx, result, kindHint) {
     const current = ctx.getProject();
     ctx.applyProject({
       meta: { ...current.meta, manifest: imported.manifest },
-      content: imported.content
+      content: imported.content,
+      ui: { activeDomain: "manifest", selectedId: null, dirty: true, warnings: [] }
     });
     return true;
   }

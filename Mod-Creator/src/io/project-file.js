@@ -28,7 +28,7 @@ export function parseProjectFile(text) {
 
   let parsed;
   try {
-    parsed = JSON.parse(text);
+    parsed = JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
   } catch (err) {
     errors.push(
       issue("error", "project.json.invalid", "", "工程 JSON 解析失败：" + (err && err.message ? err.message : err))

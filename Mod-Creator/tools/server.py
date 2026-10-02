@@ -81,7 +81,7 @@ class ApiError(Exception):
 
 def read_json(path, default=None):
     try:
-        with open(path, "r", encoding="utf-8") as handle:
+        with open(path, "r", encoding="utf-8-sig") as handle:
             return json.load(handle)
     except (OSError, ValueError):
         if default is None:

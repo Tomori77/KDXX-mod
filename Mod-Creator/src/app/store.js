@@ -159,8 +159,12 @@ export function redo() {
 }
 
 export function reset(nextState) {
-  const base = nextState === undefined ? createInitialState() : cloneValue(nextState);
-  state = { ...base, history: { past: [], future: [] } };
+  const initial = createInitialState();
+  const base = nextState === undefined ? initial : cloneValue(nextState) || {};
+  const meta = { ...initial.meta, ...(base.meta && typeof base.meta === "object" ? base.meta : {}) };
+  const content = { ...initial.content, ...(base.content && typeof base.content === "object" ? base.content : {}) };
+  const ui = { ...initial.ui, ...(base.ui && typeof base.ui === "object" ? base.ui : {}) };
+  state = { meta, content, ui, history: { past: [], future: [] } };
   notify();
   return state;
 }
