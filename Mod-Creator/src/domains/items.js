@@ -56,6 +56,23 @@ function isPlainObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function stripInternal(value) {
+  if (Array.isArray(value)) {
+    return value.map(stripInternal);
+  }
+  if (isPlainObject(value)) {
+    const out = {};
+    for (const key of Object.keys(value)) {
+      if (key.startsWith("__")) {
+        continue;
+      }
+      out[key] = stripInternal(value[key]);
+    }
+    return out;
+  }
+  return value;
+}
+
 function isBlank(value) {
   return value == null || (typeof value === "string" && value.trim() === "");
 }
@@ -914,7 +931,7 @@ function toFile(entry) {
   if (id == null) {
     throw new Error("toFiles: 条目缺少 numericId");
   }
-  return { path: "items/" + id + ".json", content: JSON.stringify(entry, null, 2) };
+  return { path: "items/" + id + ".json", content: JSON.stringify(stripInternal(entry), null, 2) };
 }
 
 export function toFiles(entriesOrEntry, ctx = {}) {

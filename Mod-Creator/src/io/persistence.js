@@ -7,6 +7,19 @@ const DB_VERSION = 1;
 const STORE = "projects";
 const FORMAT_VERSION = 1;
 const AUTOSAVE_ID = "__autosave__";
+const SNAPSHOT_MARKER = "@snapshot-";
+const SNAPSHOT_LIMIT = 10;
+
+function isSnapshotId(id) {
+  return typeof id === "string" && id.indexOf(SNAPSHOT_MARKER) !== -1;
+}
+
+function snapshotOwner(id) {
+  if (!isSnapshotId(id)) {
+    return null;
+  }
+  return id.slice(0, id.indexOf(SNAPSHOT_MARKER));
+}
 
 function hasIndexedDB() {
   return typeof indexedDB !== "undefined" && indexedDB !== null;
@@ -143,9 +156,33 @@ function summaryOf(record) {
 export async function listProjects() {
   const records = await getAllRecords();
   return records
-    .filter((record) => record && record.id && record.id !== AUTOSAVE_ID)
+    .filter((record) => record && record.id && record.id !== AUTOSAVE_ID && !isSnapshotId(record.id))
     .map(summaryOf)
     .sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+}
+
+export async function listSnapshots(modId) {
+  const records = await getAllRecords();
+  return records
+    .filter((record) => record && record.id && isSnapshotId(record.id))
+    .filter((record) => modId == null || snapshotOwner(record.id) === modId)
+    .map(summaryOf)
+    .sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+}
+
+export async function pruneSnapshots(modId, limit = SNAPSHOT_LIMIT) {
+  if (!hasIndexedDB() || !modId) {
+    return [];
+  }
+  const snapshots = await listSnapshots(modId);
+  if (snapshots.length <= limit) {
+    return [];
+  }
+  const removed = snapshots.slice(limit);
+  for (const snapshot of removed) {
+    await deleteRecord(snapshot.id);
+  }
+  return removed.map((snapshot) => snapshot.id);
 }
 
 export async function saveProject(id, project) {

@@ -11,9 +11,12 @@ import { importArchive, importDomainJson } from "../io/import-mod.js";
 import { serializeProject, deserializeProject, projectFileName } from "../io/project-file.js";
 import {
   listProjects,
+  listSnapshots,
+  pruneSnapshots,
   saveProject,
   loadProject,
   deleteProject,
+  renameProject,
   getAutosave,
   setAutosave,
   clearAutosave
@@ -184,7 +187,7 @@ export function setByPath(source, path, value) {
   return patch;
 }
 
-const ITEM_ID_MANUAL_FLAG = Symbol("itemIdManuallyEdited");
+const ITEM_ID_MANUAL_FIELD = "__numericIdManuallyEdited";
 
 function createImeGuardedField(descriptor, value, onChange, context) {
   const textLike = descriptor.control === "text" || descriptor.control === "json";
@@ -296,7 +299,15 @@ async function makeSnapshot(project) {
   }
   const stamp = new Date().toISOString();
   const record = await saveProject(id + "@snapshot-" + stamp, project);
-  return record !== null;
+  if (record === null) {
+    return false;
+  }
+  try {
+    await pruneSnapshots(id);
+  } catch {
+    void 0;
+  }
+  return true;
 }
 
 export function bootstrap() {
@@ -436,9 +447,13 @@ export function bootstrap() {
   const deleteProjectBtn = createEl("button", "pillbtn pc-toolbar-btn pc-project-delete", zhCN.deleteProject);
   deleteProjectBtn.addEventListener("click", handleDeleteProject);
 
+  const renameProjectBtn = createEl("button", "pillbtn pc-toolbar-btn pc-project-rename", zhCN.renameProject);
+  renameProjectBtn.addEventListener("click", handleRenameProject);
+
   toolbar.appendChild(newProjectBtn);
   toolbar.appendChild(openProjectBtn);
   toolbar.appendChild(saveAsProjectBtn);
+  toolbar.appendChild(renameProjectBtn);
   toolbar.appendChild(deleteProjectBtn);
   toolbar.appendChild(importModBtn);
   toolbar.appendChild(exportModBtn);
@@ -782,13 +797,13 @@ export function bootstrap() {
           return;
         }
         if (domain === "items" && descriptor.path === "item.category") {
-          if (!selected[ITEM_ID_MANUAL_FLAG]) {
+          if (!selected[ITEM_ID_MANUAL_FIELD]) {
             patch = mergePatch(patch, { item: { numericId: module.nextNumericId(domainEntries("items"), next) } });
           }
           state.renderedIndex = undefined;
         }
         if (domain === "items" && descriptor.path === "item.numericId") {
-          selected[ITEM_ID_MANUAL_FLAG] = true;
+          patch = mergePatch(patch, { [ITEM_ID_MANUAL_FIELD]: true });
           state.renderedIndex = undefined;
         }
         if (linkedPaths.has(descriptor.path)) {
@@ -955,7 +970,18 @@ export function bootstrap() {
       await saveProject(currentId, getState());
     }
     const records = await listProjects();
-    const chosen = chooseProject(records, zhCN.openProjectPrompt);
+    const options = records.slice();
+    if (currentId) {
+      const snapshots = await listSnapshots(currentId);
+      for (const snapshot of snapshots) {
+        options.push({
+          id: snapshot.id,
+          name: zhCN.snapshotLabel + " · " + snapshot.name,
+          updatedAt: snapshot.updatedAt
+        });
+      }
+    }
+    const chosen = chooseProject(options, zhCN.openProjectPrompt);
     if (!chosen) {
       return;
     }
@@ -1001,6 +1027,30 @@ export function bootstrap() {
     }
     await deleteProject(chosen);
     window.alert(zhCN.projectDeleted);
+  }
+
+  async function handleRenameProject() {
+    const records = await listProjects();
+    const chosen = chooseProject(records, zhCN.renameProjectPrompt);
+    if (!chosen) {
+      return;
+    }
+    const record = records.find((item) => item.id === chosen);
+    const answer = window.prompt(zhCN.renameProjectInput, record ? record.name : "");
+    if (answer == null) {
+      return;
+    }
+    const name = answer.trim();
+    if (!name) {
+      return;
+    }
+    const updated = await renameProject(chosen, name);
+    if (!updated) {
+      window.alert(zhCN.projectRenameFailed);
+      return;
+    }
+    await listProjects();
+    window.alert(zhCN.projectRenamed);
   }
 
   async function snapshotSafely() {
@@ -1133,8 +1183,8 @@ export function bootstrap() {
     if (!project || !projectHasContent(project)) {
       return;
     }
-    if (!window.confirm(zhCN.restoreAutosave)) {
-      await clearAutosave();
+    const dirty = projectHasContent(getState());
+    if (dirty && !window.confirm(zhCN.autosaveConflictConfirm)) {
       return;
     }
     autosaveSignature = projectSignature(project);
