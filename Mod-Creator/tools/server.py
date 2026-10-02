@@ -254,7 +254,7 @@ def looks_like_login_required(output):
 
 class LocalService:
     def __init__(self, root):
-        self.root = os.path.realpath(root)
+        self.root = os.path.realpath(normalize_root(root))
         self.edit_root = os.path.join(self.root, "edit")
         os.makedirs(self.edit_root, exist_ok=True)
 
@@ -870,6 +870,14 @@ class Server(ThreadingHTTPServer):
     def __init__(self, address, handler, service):
         self.service = service
         super().__init__(address, handler)
+
+
+def normalize_root(value):
+    text = str(value).strip().strip('"').strip("'")
+    text = text.rstrip()
+    while len(text) > 3 and text.endswith(("\\", "/")):
+        text = text[:-1]
+    return text
 
 
 def parse_args(argv):
