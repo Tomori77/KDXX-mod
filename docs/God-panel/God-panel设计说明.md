@@ -85,7 +85,7 @@ God-panel/
     maps/anchor.json       脚本锚点（官方背景 map_05，非对外入口）
     scripts/panel.json     ui.entry=menu，stateVersion 1
     code/panel.js          内联 1718 件道具数据 + 分类/搜索/分页/发放
-  tools/                   resolve-sdk / validate / deploy（优先 pwsh7、UTF-8）
+  tools/                   resolve-sdk / validate / deploy / publish（优先 pwsh7、UTF-8）
 ```
 
 ## 6. 命令
@@ -96,6 +96,7 @@ God-panel/
 ./tools/resolve-sdk.ps1   # 定位 ModSDK
 ./tools/validate.ps1      # 调用官方验证器（退出码 0 为通过）
 ./tools/deploy.ps1        # 验证后部署到游戏用户数据目录（需完全重启）
+./tools/publish.ps1       # 上传 Steam 创意工坊（publishedfileid 保持不变以覆盖同一作品）
 ```
 
 ## 7. 存档与发布
