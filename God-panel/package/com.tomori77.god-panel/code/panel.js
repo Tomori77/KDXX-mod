@@ -123,9 +123,10 @@ function handle({ event, state, world }) {
         version: 1,
         root: "root",
         nodes: [
-          { id: "root", type: "column", children: ["status", "searchRow", "tabs", "meta", "pick", "qty", "navRow", "actRow", "notice"] },
+          { id: "root", type: "column", children: ["stats", "resources", "searchRow", "tabs", "meta", "pick", "qty", "navRow", "actRow", "notice", "closeNav"] },
 
-          { id: "status", type: "text", text: "境界 " + world.realmId + "·" + world.realmLayer + " 层    灵石 " + world.spiritStones + "    第 " + world.day + " 日", style: { color: "#8a8a8a" } },
+          { id: "stats", type: "module", module: "primary-stats" },
+          { id: "resources", type: "module", module: "resources" },
 
           { id: "searchRow", type: "row", children: ["q"] },
           { id: "q", type: "input", label: "搜索名称或编号", initial: q, maxLength: 40 },
@@ -147,7 +148,8 @@ function handle({ event, state, world }) {
           { id: "b-grant", type: "button", label: "发放道具", optionId: "grant" },
           { id: "b-clear", type: "button", label: "清空搜索", optionId: "clear" },
 
-          { id: "notice", type: "text", text: notice, style: { color: "#d4bd8c" } }
+          { id: "notice", type: "text", text: notice, style: { color: "#d4bd8c" } },
+          { id: "closeNav", type: "navigation", label: "关闭", action: { type: "close" } }
         ]
       }
     }

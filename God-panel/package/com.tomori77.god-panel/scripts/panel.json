@@ -1,13 +1,15 @@
 {
   "id": "com.tomori77.god-panel:panel",
   "name": "天神面板",
-  "mapId": "com.tomori77.god-panel:anchor",
-  "nodeId": "altar",
   "stateVersion": 1,
   "entry": "code/panel.js",
   "events": ["interact", "uiSubmitted"],
   "ui": {
-    "entry": "menu",
-    "label": "天神面板"
+    "entry": "surfaces",
+    "label": "天神面板",
+    "entryPoints": [
+      { "surface": "page.overview", "slot": "actions" },
+      { "surface": "page.journey", "slot": "footer" }
+    ]
   }
 }

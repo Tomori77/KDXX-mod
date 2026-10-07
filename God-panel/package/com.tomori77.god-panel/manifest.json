@@ -1,13 +1,12 @@
 {
   "id": "com.tomori77.god-panel",
   "name": "天神面板",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "modApiVersion": 2,
   "enabled": true,
   "author": "Tomori77",
   "description": "游戏内简易调试面板：查看状态，发放灵石与道具。",
   "domains": {
-    "maps": { "schemaVersion": 1, "path": "maps" },
     "scripts": { "schemaVersion": 1, "path": "scripts" }
   }
 }
