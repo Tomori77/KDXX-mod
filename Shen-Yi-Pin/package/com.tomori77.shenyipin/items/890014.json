@@ -34,58 +34,42 @@
     "effectList": [
       {
         "kind": "periodicPulse",
-        "label": "轮转时：消耗敌方全部炎热，每层造成 5 点伤害",
+        "label": "轮转时：对敌造成其灼烧层数×20 伤害，并抽取其灼烧层数×2 的体力（不消耗灼烧）",
         "periodicPulse": {
           "intervalSec": 15,
-          "label": "轮转时：消耗敌方全部炎热，每层造成 5 点伤害",
-          "battleCondition": {
-            "type": "targetBuffStacksGreaterThan",
-            "buffId": "heat",
-            "count": 0
-          },
+          "label": "轮转时：对敌造成其灼烧层数×20 伤害，并抽取其灼烧层数×2 的体力（不消耗灼烧）",
           "damageHealth": {
             "target": "enemy",
             "amount": 0,
             "amountPerTargetBuffStack": {
-              "buffId": "heat",
-              "valuePerStack": 5
+              "buffId": "burning",
+              "valuePerStack": 20
             }
           },
-          "removeBuffStacks": [
-            {
-              "target": "enemy",
-              "buffId": "heat",
-              "count": 9999
+          "drainPrimaryStat": {
+            "target": "enemy",
+            "stat": "stamina",
+            "amountPerTargetBuffStack": {
+              "buffId": "burning",
+              "valuePerStack": 2
             }
-          ]
+          }
         }
       },
       {
         "kind": "periodicPulse",
-        "label": "轮转时：消耗敌方全部灼烧，每层造成 5 点伤害",
+        "label": "轮转时：抽取敌方其灼烧层数×2 的法力（不消耗灼烧）",
         "periodicPulse": {
           "intervalSec": 15,
-          "label": "轮转时：消耗敌方全部灼烧，每层造成 5 点伤害",
-          "battleCondition": {
-            "type": "targetBuffStacksGreaterThan",
-            "buffId": "burning",
-            "count": 0
-          },
-          "damageHealth": {
+          "label": "轮转时：抽取敌方其灼烧层数×2 的法力（不消耗灼烧）",
+          "drainPrimaryStat": {
             "target": "enemy",
-            "amount": 0,
+            "stat": "mana",
             "amountPerTargetBuffStack": {
               "buffId": "burning",
-              "valuePerStack": 5
+              "valuePerStack": 2
             }
-          },
-          "removeBuffStacks": [
-            {
-              "target": "enemy",
-              "buffId": "burning",
-              "count": 9999
-            }
-          ]
+          }
         }
       }
     ]

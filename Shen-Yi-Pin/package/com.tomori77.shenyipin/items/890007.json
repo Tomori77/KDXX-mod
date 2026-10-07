@@ -4,7 +4,7 @@
     "numericId": 890007,
     "iconBasename": "shenyipin-huisheng-jue",
     "name": "回生诀",
-    "description": "沧溟帝水经第四层招式。化寒凝甲，露盈则生。",
+    "description": "沧溟帝水经第四层招式。露盈则生，气随露复，绵绵不绝。",
     "isPublished": true,
     "isObtainable": true,
     "category": "spell",
@@ -34,26 +34,38 @@
     "effectList": [
       {
         "kind": "periodicPulse",
-        "label": "轮转时：每有 1 层露水恢复 3 点气血；并将所有寒冷转化为等量护甲",
+        "label": "轮转时：每层露水回复 5 气血 / 3 体力 / 3 蓝量，并获得露水层数一半的再生（不消耗露水）",
         "periodicPulse": {
           "intervalSec": 10,
-          "label": "轮转时：每有 1 层露水恢复 3 点气血；并将所有寒冷转化为等量护甲",
+          "label": "轮转时：每层露水回复 5 气血 / 3 体力 / 3 蓝量，并获得露水层数一半的再生（不消耗露水）",
           "primaryStatGainPerBuffStack": {
             "buffId": "dew",
             "stat": "health",
-            "valuePerStack": 3
-          }
-        },
-        "executors": [
-          {
-            "trigger": "onPeriodicPulse",
-            "type": "convertBuffStacks",
-            "sourceBuffId": "cold",
-            "targetBuffId": "armor",
-            "consumeRatio": 1,
-            "label": "将所有寒冷转化为等量护甲"
-          }
-        ]
+            "valuePerStack": 5
+          },
+          "primaryStatGainsPerBuffStack": {
+            "buffId": "dew",
+            "gains": [
+              {
+                "stat": "stamina",
+                "valuePerStack": 3
+              },
+              {
+                "stat": "mana",
+                "valuePerStack": 3
+              }
+            ]
+          },
+          "buffGains": [
+            {
+              "buffId": "regeneration",
+              "countPerSourceBuffStack": {
+                "buffId": "dew",
+                "valuePerStack": 0.5
+              }
+            }
+          ]
+        }
       }
     ]
   }

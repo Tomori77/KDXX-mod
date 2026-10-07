@@ -38,47 +38,53 @@
     },
     "effectList": [
       {
-        "kind": "passive",
-        "label": "炎热层数超过 60 时，周围道具造成的伤害 +30",
-        "activationRequirements": {
-          "buffStackThresholds": [
-            {
-              "buffId": "heat",
-              "comparator": "atLeast",
-              "count": 61
-            }
-          ]
-        },
-        "passiveEffect": {
-          "type": "battleItemDamageFlatModifier",
-          "value": 30,
-          "targetScope": {
-            "type": "adjacent"
-          },
-          "label": "炎热层数超过 60 时，周围道具造成的伤害 +30"
-        }
-      },
-      {
         "kind": "triggered",
-        "label": "炎热层数超过 60 时，周围道具造成伤害时，对敌方施加 5 层灼烧",
-        "activationRequirements": {
-          "buffStackThresholds": [
-            {
-              "buffId": "heat",
-              "comparator": "atLeast",
-              "count": 61
-            }
-          ]
-        },
+        "label": "周围火属性道具造成伤害时，对敌方施加自身炎热层数一半的灼烧",
         "triggeredEffect": {
           "trigger": "onBattleHealthDamageDealt",
           "type": "applyBuff",
           "buffId": "burning",
-          "count": 5,
           "targetActor": "enemy",
+          "polarity": "detrimental",
+          "countPerSourceBuffStack": {
+            "buffId": "heat",
+            "countPerStack": 0.5
+          },
+          "support": "battleOnly",
           "eventSource": {
             "target": {
               "type": "adjacent"
+            },
+            "filter": {
+              "elements": [
+                "fire"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "kind": "triggered",
+        "label": "火属性招式释放时，对敌方随机一件道具减速 3 秒",
+        "triggeredEffect": {
+          "trigger": "onActiveSpellCast",
+          "type": "itemRuntimeStatus",
+          "itemRuntimeStatus": "slow",
+          "durationSec": 3,
+          "targetActor": "enemy",
+          "targetScope": "enemyRandom",
+          "amount": 1,
+          "eventSource": {
+            "target": {
+              "type": "any"
+            },
+            "filter": {
+              "categories": [
+                "spell"
+              ],
+              "elements": [
+                "fire"
+              ]
             }
           }
         }

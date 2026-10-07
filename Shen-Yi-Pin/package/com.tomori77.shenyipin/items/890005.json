@@ -42,7 +42,7 @@
     "effectList": [
       {
         "kind": "effectNote",
-        "label": "长按释放，消耗 50 层露水，<battle>冻结敌方全部道具 5 秒，对敌方施加 20 层乱流与 30 层冰霜</battle>，并使自身获得 100 层寒冷",
+        "label": "长按释放，<battle>冻结敌方全部道具 5 秒，消耗敌方 50% 露水，对敌方施加 30 层乱流</battle>，自身获得 100 层寒冷",
         "executors": [
           {
             "trigger": "onActiveSpellCast",
@@ -56,29 +56,27 @@
           },
           {
             "trigger": "onActiveSpellCast",
-            "type": "buffGain",
-            "buffId": "turbulence",
-            "amount": 20,
-            "targetActor": "enemy",
-            "support": "battleOnly",
-            "consumeSourceBuffStacks": {
-              "buffId": "dew",
-              "requiredStacks": 50,
-              "maxStacks": 50
-            }
+            "type": "consumeBuffStacks",
+            "sourceBuffId": "dew",
+            "consumeTargetActor": "enemy",
+            "consumeRatio": 0.5,
+            "consumeRounding": "floor",
+            "support": "battleOnly"
           },
           {
             "trigger": "onActiveSpellCast",
             "type": "buffGain",
-            "buffId": "frost",
+            "buffId": "turbulence",
             "amount": 30,
-            "targetActor": "enemy"
+            "targetActor": "enemy",
+            "support": "battleOnly"
           },
           {
             "trigger": "onActiveSpellCast",
             "type": "buffGain",
             "buffId": "cold",
-            "amount": 100
+            "amount": 100,
+            "targetActor": "self"
           }
         ]
       }

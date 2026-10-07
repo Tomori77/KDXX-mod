@@ -40,63 +40,127 @@
       "sourceScriptureNumericId": 190002,
       "unlockLayer": 6,
       "rewardKind": "fixed",
-      "triggerMode": "active",
-      "role": "offense",
-      "activeCast": {
-        "cooldownSec": 12
-      }
+      "triggerMode": "conditional",
+      "role": "offense"
     },
     "effectList": [
       {
-        "kind": "effectNote",
-        "label": "长按释放：每有 1 层炎热，获得 1 层引雷、1 层灼烧、1 层护甲、1 层沉重；6 秒内不消耗体力和法力",
+        "kind": "triggered",
+        "label": "对敌方造成伤害时，附加自身炎热层数的伤害",
+        "triggeredEffect": {
+          "trigger": "onBattleHealthDamageDealt",
+          "type": "battleDamageHealth",
+          "amount": 0,
+          "amountPerSourceBuffStack": {
+            "buffId": "heat",
+            "valuePerStack": 1
+          },
+          "eventSource": {
+            "target": {
+              "type": "any"
+            }
+          },
+          "singletonByTemplate": true
+        }
+      },
+      {
+        "kind": "triggered",
+        "label": "每获取 100 层炎热：自身 +10 引雷/+10 风压/+10 坚实，对敌 +50 禁疗/+20 麻痹",
+        "triggeredEffect": {
+          "trigger": "onBuffGain",
+          "eventBuffId": "heat",
+          "type": "applyBuff",
+          "buffId": "lightningCharge",
+          "count": 10,
+          "targetActor": "self",
+          "polarity": "beneficial",
+          "support": "common",
+          "charge": {
+            "threshold": 100,
+            "source": {
+              "trigger": "onBuffGain",
+              "buffIds": [
+                "heat"
+              ]
+            }
+          }
+        },
         "executors": [
           {
-            "trigger": "onActiveSpellCast",
-            "type": "buffGain",
-            "buffId": "lightningCharge",
-            "amount": 0,
-            "amountPerSourceBuffStack": {
-              "buffId": "heat",
-              "valuePerStack": 1
+            "trigger": "onBuffGain",
+            "eventBuffId": "heat",
+            "type": "applyBuff",
+            "buffId": "windPressure",
+            "count": 10,
+            "targetActor": "self",
+            "polarity": "beneficial",
+            "support": "common",
+            "charge": {
+              "threshold": 100,
+              "source": {
+                "trigger": "onBuffGain",
+                "buffIds": [
+                  "heat"
+                ]
+              }
             }
           },
           {
-            "trigger": "onActiveSpellCast",
-            "type": "buffGain",
-            "buffId": "burning",
-            "amount": 0,
-            "amountPerSourceBuffStack": {
-              "buffId": "heat",
-              "valuePerStack": 1
+            "trigger": "onBuffGain",
+            "eventBuffId": "heat",
+            "type": "applyBuff",
+            "buffId": "sturdy",
+            "count": 10,
+            "targetActor": "self",
+            "polarity": "beneficial",
+            "support": "common",
+            "charge": {
+              "threshold": 100,
+              "source": {
+                "trigger": "onBuffGain",
+                "buffIds": [
+                  "heat"
+                ]
+              }
             }
           },
           {
-            "trigger": "onActiveSpellCast",
-            "type": "buffGain",
-            "buffId": "armor",
-            "amount": 0,
-            "amountPerSourceBuffStack": {
-              "buffId": "heat",
-              "valuePerStack": 1
+            "trigger": "onBuffGain",
+            "eventBuffId": "heat",
+            "type": "applyBuff",
+            "buffId": "antiHeal",
+            "count": 50,
+            "targetActor": "enemy",
+            "polarity": "detrimental",
+            "support": "battleOnly",
+            "charge": {
+              "threshold": 100,
+              "source": {
+                "trigger": "onBuffGain",
+                "buffIds": [
+                  "heat"
+                ]
+              }
             }
           },
           {
-            "trigger": "onActiveSpellCast",
-            "type": "buffGain",
-            "buffId": "heavy",
-            "amount": 0,
-            "amountPerSourceBuffStack": {
-              "buffId": "heat",
-              "valuePerStack": 1
+            "trigger": "onBuffGain",
+            "eventBuffId": "heat",
+            "type": "applyBuff",
+            "buffId": "paralysis",
+            "count": 20,
+            "targetActor": "enemy",
+            "polarity": "detrimental",
+            "support": "battleOnly",
+            "charge": {
+              "threshold": 100,
+              "source": {
+                "trigger": "onBuffGain",
+                "buffIds": [
+                  "heat"
+                ]
+              }
             }
-          },
-          {
-            "trigger": "onActiveSpellCast",
-            "type": "temporaryActiveSpellCostModifier",
-            "stat": "all",
-            "amount": -999,
-            "durationSec": 6
           }
         ]
       }

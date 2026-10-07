@@ -39,10 +39,10 @@
     "effectList": [
       {
         "kind": "periodicPulse",
-        "label": "轮转时：每有 1 件相邻水属性道具，自身获得 30 层露水、10 层闪避、10 层敏捷；每有 1 层露水恢复 30 点气血；<battle>对敌方施加 20 层冰霜与 20 层乱流，并使敌方全部道具冻结 3 秒</battle>",
+        "label": "轮转时：每有 1 件相邻水属性道具，自身获得 30 层露水、10 层闪避、10 层敏捷；<battle>对敌方施加 20 层冰霜与 20 层乱流，并使敌方全部道具冻结 3 秒</battle>",
         "periodicPulse": {
           "intervalSec": 12,
-          "label": "轮转时：每有 1 件相邻水属性道具，自身获得 30 层露水、10 层闪避、10 层敏捷；每有 1 层露水恢复 30 点气血",
+          "label": "轮转时：每有 1 件相邻水属性道具，自身获得 30 层露水、10 层闪避、10 层敏捷",
           "buffGains": [
             {
               "buffId": "dew",
@@ -63,11 +63,6 @@
             "elements": [
               "water"
             ]
-          },
-          "primaryStatGainPerBuffStack": {
-            "buffId": "dew",
-            "stat": "health",
-            "valuePerStack": 30
           },
           "itemRuntimeStatusEffects": [
             {

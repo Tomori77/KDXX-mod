@@ -37,17 +37,15 @@
     "effectList": [
       {
         "kind": "effectNote",
-        "label": "长按释放，消耗 5 点法力与 5 层露水，<battle>对敌方造成 20 点伤害，并施加 3 层乱流</battle>",
+        "label": "长按释放，消耗 5 点法力，<battle>对敌方造成 20 点伤害，并按敌方每层冰霜额外造成 1 点伤害</battle>",
         "executors": [
           {
             "trigger": "onActiveSpellCast",
             "type": "damageHealth",
             "amount": 20,
-            "realmGrowth": {
-              "qiRefining": [
-                20,
-                40
-              ]
+            "amountPerTargetBuffStack": {
+              "buffId": "frost",
+              "valuePerStack": 1
             },
             "costs": [
               {
@@ -61,19 +59,6 @@
                 }
               }
             ]
-          },
-          {
-            "trigger": "onActiveSpellCast",
-            "type": "buffGain",
-            "buffId": "turbulence",
-            "amount": 3,
-            "targetActor": "enemy",
-            "support": "battleOnly",
-            "consumeSourceBuffStacks": {
-              "buffId": "dew",
-              "requiredStacks": 5,
-              "maxStacks": 5
-            }
           }
         ]
       }

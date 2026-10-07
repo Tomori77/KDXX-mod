@@ -4,7 +4,7 @@
     "numericId": 890006,
     "iconBasename": "shenyipin-cangming-xiao",
     "name": "沧溟啸",
-    "description": "沧溟帝水经第四层招式。长啸引潮，帝水经修为大涨。",
+    "description": "沧溟帝水经第四层招式。长啸引潮，寒随声至，敌阵为之凝滞。",
     "isPublished": true,
     "isObtainable": true,
     "category": "spell",
@@ -34,17 +34,19 @@
     "effectList": [
       {
         "kind": "triggered",
-        "label": "水属性招式轮转后，全部道具轮转进度快进 1 秒",
+        "label": "水属性招式释放后，冻结敌方最大道具 3 秒",
         "triggeredEffect": {
-          "trigger": "onPeriodicPulse",
-          "type": "advanceRotationProgress",
-          "target": {
-            "type": "all"
-          },
-          "deltaMs": 1000,
+          "trigger": "onActiveSpellCast",
+          "type": "itemRuntimeStatus",
+          "itemRuntimeStatus": "freeze",
+          "durationSec": 3,
+          "targetActor": "enemy",
+          "targetScope": "enemyLargest",
+          "amount": 1,
+          "support": "battleOnly",
           "eventSource": {
             "target": {
-              "type": "other"
+              "type": "any"
             },
             "filter": {
               "categories": [
@@ -59,14 +61,20 @@
       },
       {
         "kind": "triggered",
-        "label": "水属性招式使用时，全部道具轮转进度快进 1 秒",
+        "label": "水属性招式释放后，自身水属性道具加速 1 秒",
         "triggeredEffect": {
           "trigger": "onActiveSpellCast",
-          "type": "advanceRotationProgress",
-          "target": {
-            "type": "all"
+          "type": "itemRuntimeStatus",
+          "itemRuntimeStatus": "haste",
+          "durationSec": 1,
+          "targetActor": "self",
+          "targetScope": "selfAll",
+          "targetFilter": {
+            "elements": [
+              "water"
+            ]
           },
-          "deltaMs": 1000,
+          "amount": 1,
           "eventSource": {
             "target": {
               "type": "any"

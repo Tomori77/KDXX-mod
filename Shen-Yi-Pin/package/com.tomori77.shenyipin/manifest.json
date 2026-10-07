@@ -1,18 +1,18 @@
 {
   "id": "com.tomori77.shenyipin",
   "name": "神一品",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "modApiVersion": 1,
   "saveCompatibility": {
     "compatibleFrom": ">=1.0.0 <2.0.0",
-    "contentRevision": 2
+    "contentRevision": 3
   },
   "enabled": true,
   "author": "Tomori77",
-  "description": "新增凡品水属性功法「沧溟帝水经·残卷」及火属性功法「荧惑烬火典·残卷」，共 17 门配套招式。",
+  "description": "神一品·功法系列：已收录水属性《沧溟帝水经·残卷》与火属性《荧惑烬火典·残卷》两部功法，各 6 重境界、各 9 门配套招式。",
   "domains": {
     "items": {
-      "schemaVersion": 3,
+      "schemaVersion": 5,
       "path": "items"
     }
   }

@@ -37,30 +37,17 @@
     "effectList": [
       {
         "kind": "effectNote",
-        "label": "长按释放，消耗 10 层露水，<battle>对敌方造成 20 点伤害并施加 5 层乱流</battle>，自身全部道具加速 10 秒",
+        "label": "长按释放，消耗 9 层露水，<battle>对敌方造成 35 点伤害 ×3 次</battle>，自身全部道具加速 10 秒，<battle>对敌方施加 9 层乱流</battle>",
         "executors": [
           {
             "trigger": "onActiveSpellCast",
             "type": "damageHealth",
-            "amount": 20,
-            "realmGrowth": {
-              "qiRefining": [
-                20,
-                40
-              ]
-            }
-          },
-          {
-            "trigger": "onActiveSpellCast",
-            "type": "buffGain",
-            "buffId": "turbulence",
-            "amount": 5,
-            "targetActor": "enemy",
-            "support": "battleOnly",
+            "amount": 35,
+            "repeatCount": 3,
             "consumeSourceBuffStacks": {
               "buffId": "dew",
-              "requiredStacks": 10,
-              "maxStacks": 10
+              "requiredStacks": 9,
+              "maxStacks": 9
             }
           },
           {
@@ -71,6 +58,14 @@
             "targetActor": "self",
             "targetSelection": "all",
             "durationSec": 10
+          },
+          {
+            "trigger": "onActiveSpellCast",
+            "type": "buffGain",
+            "buffId": "turbulence",
+            "amount": 9,
+            "targetActor": "enemy",
+            "support": "battleOnly"
           }
         ]
       }

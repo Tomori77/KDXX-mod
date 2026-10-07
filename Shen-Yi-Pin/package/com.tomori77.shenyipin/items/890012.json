@@ -34,77 +34,19 @@
     "effectList": [
       {
         "kind": "periodicPulse",
-        "label": "轮转时：有灼烧时，将全部灼烧转为炎热，按炎热层数对敌方造成伤害，并按炎热层数施加灼烧",
+        "label": "轮转时：按自身每层炎热，对敌方施加 2 层灼烧（不消耗炎热）",
         "periodicPulse": {
-          "intervalSec": 16,
-          "label": "轮转时：有灼烧时，将全部灼烧转为炎热，按炎热层数对敌方造成伤害，并按炎热层数施加灼烧",
-          "activationRequirements": {
-            "buffStackThresholds": [
-              {
-                "buffId": "burning",
-                "comparator": "atLeast",
-                "count": 1
-              }
-            ]
-          },
-          "damageHealth": {
-            "target": "enemy",
-            "amount": 0,
-            "amountPerSourceBuffStack": {
-              "buffId": "heat",
-              "valuePerStack": 1
-            }
-          },
+          "intervalSec": 10,
+          "label": "轮转时：按自身每层炎热，对敌方施加 2 层灼烧（不消耗炎热）",
           "buffGains": [
             {
               "buffId": "burning",
+              "target": "enemy",
+              "polarity": "detrimental",
               "countPerSourceBuffStack": {
                 "buffId": "heat",
-                "valuePerStack": 1
-              },
-              "target": "enemy",
-              "polarity": "detrimental"
-            }
-          ]
-        },
-        "executors": [
-          {
-            "trigger": "onPeriodicPulse",
-            "type": "convertBuffStacks",
-            "sourceBuffId": "burning",
-            "targetBuffId": "heat",
-            "consumeRatio": 1,
-            "label": "将全部灼烧转为炎热"
-          }
-        ]
-      },
-      {
-        "kind": "periodicPulse",
-        "label": "轮转时：无灼烧时，按炎热层数对敌方造成伤害，并给自身增加 20 层灼烧",
-        "periodicPulse": {
-          "intervalSec": 16,
-          "label": "轮转时：无灼烧时，按炎热层数对敌方造成伤害，并给自身增加 20 层灼烧",
-          "activationRequirements": {
-            "buffStackThresholds": [
-              {
-                "buffId": "burning",
-                "comparator": "atMost",
-                "count": 0
+                "valuePerStack": 2
               }
-            ]
-          },
-          "damageHealth": {
-            "target": "enemy",
-            "amount": 0,
-            "amountPerSourceBuffStack": {
-              "buffId": "heat",
-              "valuePerStack": 1
-            }
-          },
-          "buffGains": [
-            {
-              "buffId": "burning",
-              "count": 20
             }
           ]
         }

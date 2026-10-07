@@ -34,14 +34,14 @@
     "effectList": [
       {
         "kind": "periodicPulse",
-        "label": "轮转时：露水为空，获得 20 层露水",
+        "label": "露水≤80：增加 25 层露水",
         "periodicPulse": {
           "intervalSec": 6,
-          "label": "轮转时：露水为空，获得 20 层露水",
+          "label": "露水≤80：增加 25 层露水",
           "buffGains": [
             {
               "buffId": "dew",
-              "count": 20
+              "count": 25
             }
           ],
           "activationRequirements": {
@@ -49,7 +49,7 @@
               {
                 "buffId": "dew",
                 "comparator": "atMost",
-                "count": 0
+                "count": 80
               }
             ]
           }
@@ -57,14 +57,24 @@
       },
       {
         "kind": "periodicPulse",
-        "label": "轮转时：露水不为空，获得 10 层寒冷，且不消耗露水",
+        "label": "露水≥81：增加 35 层露水、10 层寒冷，对敌施加 5 层冰霜",
         "periodicPulse": {
           "intervalSec": 6,
-          "label": "轮转时：露水不为空，获得 10 层寒冷，且不消耗露水",
+          "label": "露水≥81：增加 35 层露水、10 层寒冷，对敌施加 5 层冰霜",
           "buffGains": [
+            {
+              "buffId": "dew",
+              "count": 35
+            },
             {
               "buffId": "cold",
               "count": 10
+            },
+            {
+              "buffId": "frost",
+              "count": 5,
+              "target": "enemy",
+              "polarity": "detrimental"
             }
           ],
           "activationRequirements": {
@@ -72,30 +82,7 @@
               {
                 "buffId": "dew",
                 "comparator": "atLeast",
-                "count": 1
-              }
-            ]
-          }
-        }
-      },
-      {
-        "kind": "periodicPulse",
-        "label": "轮转时：露水满层，获得 5 层闪避",
-        "periodicPulse": {
-          "intervalSec": 6,
-          "label": "轮转时：露水满层，获得 5 层闪避",
-          "buffGains": [
-            {
-              "buffId": "dodge",
-              "count": 5
-            }
-          ],
-          "activationRequirements": {
-            "buffStackThresholds": [
-              {
-                "buffId": "dew",
-                "comparator": "atCap",
-                "count": 0
+                "count": 81
               }
             ]
           }
